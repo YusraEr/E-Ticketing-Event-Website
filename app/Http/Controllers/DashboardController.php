@@ -15,7 +15,7 @@ class DashboardController extends Controller
             } else if (Auth::user()->role == 'organizer'){
                 return view('dashboard.organizer');
             }
-            return view('dashboard.user');
+            return view('home');
         }
         return redirect()->route('login');
     }

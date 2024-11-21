@@ -1,0 +1,80 @@
+Table users {
+  id int [pk, increment]
+  name varchar(100)
+  email varchar(100) [unique]
+  password varchar(100)
+  role varchar(50) // Add role to differentiate user types
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table events {
+  id int [pk, increment]
+  name varchar(100)
+  description text
+  date datetime
+  location varchar(100)
+  organizer_id int [ref: > users.id]
+  event_image varchar(255)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ticket_types {
+  id int [pk, increment]
+  event_id int [ref: > events.id]
+  name varchar(100) // e.g., VIP, Regular, Economy
+  price decimal(10, 2)
+  quota int
+  available_tickets int
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (event_id, name) [unique] // Ensure unique ticket type names per event
+  }
+
+  Note: 'Maximum 3 ticket types per event' // This is a business rule to be enforced in the application
+}
+
+Table tickets {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  event_id int [ref: > events.id]
+  ticket_type_id int [ref: > ticket_types.id] // Add reference to ticket_types
+  purchase_date datetime
+  seat_number varchar(10)
+  status varchar(50)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table bookings {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  event_id int [ref: > events.id]
+  booking_date datetime
+  status varchar(50)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table reviews {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  event_id int [ref: > events.id]
+  rating int // Add rating field
+  review text // Add review field
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table analytics {
+  id int [pk, increment]
+  event_id int [ref: > events.id]
+  total_sales decimal(10, 2) // Add field for total sales
+  total_attendees int // Add field for total attendees
+  performance_score int // Add field for event performance score
+  created_at timestamp
+  updated_at timestamp
+}
