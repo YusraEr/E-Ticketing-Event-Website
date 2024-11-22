@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
 
 // navigasi
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
-Route::get('/home', [HomeController::class, 'index'])->name('user.home')->middleware('auth');
+Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::get('main', function () {
     return view('dashboard');
 })->name('main')->middleware('auth');

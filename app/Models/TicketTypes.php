@@ -5,7 +5,7 @@ namespace App\Models;
 use GPBMetadata\Google\Api\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-class Ticket extends Model
+class TicketTypes extends Model
 {
     protected $fillable = [
         'event_id',

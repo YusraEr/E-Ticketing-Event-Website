@@ -1,16 +1,15 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Model;
 
-class Booking extends Model
+use Illuminate\Database\Eloquent\Model;
+class Review extends Model
 {
     protected $fillable = [
         'event_id',
         'user_id',
-        'quantity',
-        'total',
+        'rating',
+        'comment',
     ];
 
     public function event()
