@@ -16,8 +16,6 @@ class OrganizerMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // disini toh taruh perkondisian untuk mengecek apakah user adalah admin atau bukan, kalau bukan
-        // maka akan diarahkan ke halaman lain atau di berikan pesan error
         if (Auth::check()) {
             if (Auth::user()->role == 'organizer') {
                 return $next($request);

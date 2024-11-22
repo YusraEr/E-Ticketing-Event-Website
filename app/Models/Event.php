@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use GPBMetadata\Google\Api\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,16 +12,16 @@ class Event extends Model
     use HasFactory, Notifiable;
 
     protected $fillable = [
+        'user_id',
         'name',
         'description',
-        'date',
+        'event_date',
         'location',
-        'image',
-        'organizer_id',
+        'image'
     ];
 
-    public function organizer()
+    public function ticketTypes()
     {
-        return $this->belongsTo(User::class, 'organizer_id');
+        return $this->hasMany(TicketType::class);
     }
 }

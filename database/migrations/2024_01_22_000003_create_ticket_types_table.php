@@ -7,26 +7,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('ticket_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
-            $table->string('name', 100);
+            $table->foreignId('event_id')->constrained()->onDelete('cascade');
+            $table->string('name');
             $table->decimal('price', 10, 2);
-            $table->integer('quota');
-            $table->text('benefits')->nullable();
+            $table->integer('available_tickets');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('ticket_types');
     }

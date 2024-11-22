@@ -13,7 +13,6 @@
 
     <!-- Add Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
     <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -140,21 +139,36 @@
             <div class="swiper eventSwiper">
                 <div class="swiper-wrapper">
                     <!-- Event Card -->
-                    @for ($i = 1; $i <= 10; $i++)
+                    @foreach ($events as $event)
                     <div class="swiper-slide">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                            <img src="https://picsum.photos/400/200?random={{$i}}" alt="Event Image" class="w-full h-48 object-cover">
+                            <img src="{{ asset('storage/' . $event->image) }}" alt="Event Image" class="w-full h-48 object-cover">
                             <div class="p-4">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Event Title {{$i}}</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Date: Dec {{$i}}, 2023</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Location: Venue {{$i}}</p>
-                                <a href="" class="mt-3 inline-block px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Event Title {{$event->name}}</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    {{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    {{$event->location}}
+                                </p>
+
+                                <a href="{{ route('event.show', $event->id) }}" class="mt-3 inline-block px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                                     View Details
                                 </a>
                             </div>
                         </div>
                     </div>
-                    @endfor
+                    @endforeach
                 </div>
                 <div class="swiper-pagination"></div>
                 <div class="swiper-button-next"></div>
