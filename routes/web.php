@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -8,10 +9,6 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
-
-// Route::get('/', function () {
-//     return view('home');
-// });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -27,10 +24,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/booking', [TicketController::class, 'index'])->name('booking.index');
-    Route::get('/booking-create', [TicketController::class, 'create'])->name('booking.create');
-    Route::post('/booking', [TicketController::class, 'store'])->name('booking.store');
-    Route::get('/booking/{booking}', [TicketController::class, 'show'])->name('booking.show');
+    Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
+    Route::get('/booking-create', [BookingController::class, 'create'])->name('booking.create');
+    Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
+    Route::get('/booking/{booking}', [BookingController::class, 'show'])->name('booking.show');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');

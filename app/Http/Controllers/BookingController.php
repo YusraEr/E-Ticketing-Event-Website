@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TicketType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
@@ -11,7 +13,12 @@ class BookingController extends Controller
      */
     public function index()
     {
-        //
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+        return view('booking.create', [
+            'tickets' => TicketType::all()
+        ]);
     }
 
     /**

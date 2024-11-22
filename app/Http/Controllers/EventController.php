@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -41,8 +40,6 @@ class EventController extends Controller
         }
 
         try {
-            // Add debug logging
-            Log::info('Incoming request data:', $request->all());
 
             $validated = $request->validate([
                 'name' => 'required|max:255',
@@ -60,7 +57,6 @@ class EventController extends Controller
             ]);
 
             // Add more detailed error logging
-            Log::info('Validated data:', $validated);
 
             // Handle image upload
             if ($request->hasFile('image')) {
@@ -105,8 +101,6 @@ class EventController extends Controller
             return redirect()->route('event.show', $event->id)
                 ->with('success', 'Event created successfully!');
         } catch (\Exception $e) {
-            Log::error('Event creation failed: ' . $e->getMessage());
-            Log::error($e->getTraceAsString());
             return back()->with('error', 'Failed to create event: ' . $e->getMessage())
                 ->withInput();
         }

@@ -28,7 +28,7 @@
 
             <!-- Form Section -->
             <div class="px-8 py-8">
-                <form method="POST" action="{{ route('event.store') }}" enctype="multipart/form-data" id="event-form"
+                <form method="POST" action="{{ route('events.store') }}" enctype="multipart/form-data" id="event-form"
                       class="space-y-8">
                     @csrf
                     <input type="hidden" name="cropped_image" id="cropped_image">
@@ -39,7 +39,7 @@
 
                         <!-- Event Name with floating label and hint -->
                         <div class="relative">
-                            <input type="text" name="name" id="event_name" required
+                            <input type="text" name="name" id="name" required
                                    class="peer w-full px-4 py-3 rounded-lg border-2 border-gray-300 placeholder-transparent
                                           focus:border-blue-600 focus:ring-0 transition duration-200 bg-white text-gray-900"
                                    placeholder="Event Name">
@@ -51,11 +51,14 @@
                                 Event Name
                             </label>
                             <p class="mt-1 text-xs text-gray-500">Choose a clear, descriptive name for your event</p>
+                            @error('name')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- Category Selection with hint -->
                         <div class="relative">
-                            <select name="category_id" required id="category"
+                            <select name="category_id" required id="category_id"
                                     class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-blue-600
                                            focus:ring-0 transition duration-200 appearance-none cursor-pointer bg-white text-gray-900">
                                 <option value="" disabled selected>Select a category</option>
@@ -65,10 +68,13 @@
                             </select>
                             <p class="mt-1 text-xs text-gray-500">Choose the category that best fits your event type</p>
                             <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                                <svg class="w-5 h-5 text-gray-400" viewBox="0 0 20 20">
+                                    <path fill="currentColor" d="M7 7l3 3 3-3v2L10 12 7 9z"/>
                                 </svg>
                             </div>
+                            @error('category_id')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- Rich Text Editor for Description with character counter -->
@@ -83,24 +89,33 @@
                                 </div>
                             </div>
                             <p class="mt-1 text-xs text-gray-500">Describe your event in detail, including what attendees can expect</p>
+                            @error('description')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
                     <!-- Date & Location with better hints -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="relative">
-                            <input type="datetime-local" name="event_date" required
+                            <input type="datetime-local" name="event_date" id="event_date" required
                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-blue-600
                                           focus:ring-0 transition duration-200 bg-white text-gray-900"
                                    min="{{ date('Y-m-d\TH:i') }}">
                             <p class="mt-1 text-xs text-gray-500">Select a future date and time for your event</p>
+                            @error('event_date')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="relative">
-                            <input type="text" name="location" required
+                            <input type="text" name="location" id="location" required
                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-blue-600
                                           focus:ring-0 transition duration-200 bg-white text-gray-900"
                                    placeholder="Enter venue or address">
                             <p class="mt-1 text-xs text-gray-500">Provide the full address or venue name</p>
+                            @error('location')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
@@ -145,6 +160,9 @@
                                     </label>
                                     <p class="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                                 </div>
+                                @error('image')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                     </div>
