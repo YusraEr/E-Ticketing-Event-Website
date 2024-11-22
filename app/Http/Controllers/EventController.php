@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,11 +16,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        if (Auth::check()) {
-            return view('event.index');
-        } else {
-            return redirect()->route('login');
-        }
+        return view('event.index');
     }
 
     /**
@@ -29,7 +27,8 @@ class EventController extends Controller
         if (!Auth::check()) {
             return redirect()->route('login');
         }
-        return view('event.create');
+        $categories = Category::all();
+        return view('event.create', compact('categories'));
     }
 
     /**
@@ -42,6 +41,8 @@ class EventController extends Controller
         }
 
         try {
+            // Add debug logging
+            Log::info('Incoming request data:', $request->all());
 
             $validated = $request->validate([
                 'name' => 'required|max:255',
@@ -49,6 +50,7 @@ class EventController extends Controller
                 'event_date' => 'required|date|after:now',
                 'location' => 'required',
                 'image' => 'required|image|max:10240',
+                'category_id' => 'required|exists:categories,id',
                 'ticket_categories' => 'required|array|min:1|max:3',
                 'ticket_categories.*' => 'required|string|max:255',
                 'ticket_prices' => 'required|array|min:1|max:3',
@@ -57,6 +59,8 @@ class EventController extends Controller
                 'ticket_quantities.*' => 'required|integer|min:1'
             ]);
 
+            // Add more detailed error logging
+            Log::info('Validated data:', $validated);
 
             // Handle image upload
             if ($request->hasFile('image')) {
@@ -67,7 +71,7 @@ class EventController extends Controller
                 // Handle base64 cropped image if file upload fails
                 $image_64 = $request->input('cropped_image');
                 $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                $replace = substr($image_64, 0, strpos($image_64, ',')+1);
+                $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
                 $image = str_replace($replace, '', $image_64);
                 $image = str_replace(' ', '+', $image);
 
@@ -84,6 +88,7 @@ class EventController extends Controller
                 'description' => $validated['description'],
                 'event_date' => $validated['event_date'],
                 'location' => $validated['location'],
+                'category_id' => $validated['category_id'],
                 'image' => $imagePath,
             ]);
 
@@ -97,10 +102,13 @@ class EventController extends Controller
                 ]);
             }
 
-            return redirect()->route('events.show', $event->id)
+            return redirect()->route('event.show', $event->id)
                 ->with('success', 'Event created successfully!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to create event: ' . $e->getMessage());
+            Log::error('Event creation failed: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+            return back()->with('error', 'Failed to create event: ' . $e->getMessage())
+                ->withInput();
         }
     }
 

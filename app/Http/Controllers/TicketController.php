@@ -14,7 +14,12 @@ class TicketController extends Controller
      */
     public function index()
     {
-        //
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+        return view('booking.index', [
+            'tickets' => TicketType::all()
+        ]);
     }
 
     /**

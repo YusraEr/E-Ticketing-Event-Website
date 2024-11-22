@@ -12,42 +12,58 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex items-center">
-                    <a href="{{ route('dashboard') }}" class="text-sm font-medium text-gray-300 hover:text-white">
-                        {{ __('Dashboard') }}
-                    </a>
-                    <a href="{{ route('event.index') }}" class="text-sm font-medium text-gray-300 hover:text-white">
-                        {{ __('Events') }}
-                    </a>
-                    {{-- <a href="{{ route('contact') }}" class="text-sm font-medium text-gray-300 hover:text-white">
-                        {{ __('Contact') }}
-                    </a> --}}
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="text-sm font-medium text-gray-300 hover:text-white">
+                            {{ __('Dashboard') }}
+                        </a>
+                        <a href="{{ route('event.index') }}" class="text-sm font-medium text-gray-300 hover:text-white">
+                            {{ __('Events') }}
+                        </a>
+                    @endauth
+                    @guest
+                        <a href="{{ route('event.index') }}" class="text-sm font-medium text-gray-300 hover:text-white">
+                            {{ __('Events') }}
+                        </a>
+                    @endguest
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
-                <div class="relative">
-                    <button @click="open = ! open" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-300 bg-gray-800 hover:text-white focus:outline-none transition ease-in-out duration-150">
-                        <div>{{ Auth::user()->name }}</div>
-                        <div class="ml-1">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                    </button>
-                    <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-20">
-                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">
-                            {{ __('Profile') }}
-                        </a>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <a href="{{ route('logout') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
-                               onclick="event.preventDefault(); this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                @auth
+                    <div class="relative">
+                        <button @click="open = ! open" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-300 bg-gray-800 hover:text-white focus:outline-none transition ease-in-out duration-150">
+                            <div>{{ Auth::user()->name }}</div>
+                            <div class="ml-1">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-20">
+                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">
+                                {{ __('Profile') }}
                             </a>
-                        </form>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <a href="{{ route('logout') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
+                                   onclick="event.preventDefault(); this.closest('form').submit();">
+                                    {{ __('Log Out') }}
+                                </a>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                @endauth
+                @guest
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ route('login') }}" class="text-sm font-medium text-gray-300 hover:text-white">
+                            {{ __('Login') }}
+                        </a>
+                        <a href="{{ route('register') }}" class="text-sm font-medium text-gray-300 hover:text-white">
+                            {{ __('Register') }}
+                        </a>
+                    </div>
+                @endguest
             </div>
 
             <!-- Hamburger -->
@@ -64,39 +80,49 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden backdrop-filter backdrop-blur-lg bg-opacity-30">
-        <div class="pt-2 pb-3 space-y-1">
-            <a href="{{ route('dashboard') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-                {{ __('Dashboard') }}
-            </a>
-            <a href="{{ route('event.index') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-                {{ __('Events') }}
-            </a>
-            {{-- <a href="{{ route('contact') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-                {{ __('Contact') }}
-            </a> --}}
-        </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-700">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-300">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <a href="{{ route('profile.edit') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-                    {{ __('Profile') }}
+        @auth
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="{{ route('dashboard') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                    {{ __('Dashboard') }}
                 </a>
-                <form method="POST" action="{{ route('logout') }}">
-
-                    @csrf
-                    <a href="{{ route('logout') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                       onclick="event.preventDefault(); this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </a>
-                </form>
+                <a href="{{ route('event.index') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                    {{ __('Events') }}
+                </a>
             </div>
-        </div>
+            <div class="pt-4 pb-1 border-t border-gray-700">
+                <div class="px-4">
+                    <div class="font-medium text-base text-gray-300">{{ Auth::user()->name }}</div>
+                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                </div>
+
+                <div class="mt-3 space-y-1">
+                    <a href="{{ route('profile.edit') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                        {{ __('Profile') }}
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+
+                        @csrf
+                        <a href="{{ route('logout') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                           onclick="event.preventDefault(); this.closest('form').submit();">
+                            {{ __('Log Out') }}
+                        </a>
+                    </form>
+                </div>
+            </div>
+        @endauth
+        @guest
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="{{ route('event.index') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                    {{ __('Events') }}
+                </a>
+                <a href="{{ route('login') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                    {{ __('Login') }}
+                </a>
+                <a href="{{ route('register') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                    {{ __('Register') }}
+                </a>
+            </div>
+        @endguest
     </div>
 </nav>
 

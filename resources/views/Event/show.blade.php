@@ -20,6 +20,13 @@
                         <div class="flex items-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
+                            {{ $event->category->name }}
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -77,62 +84,71 @@
                     <div class="sticky top-8">
                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
                             <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Select Tickets</h2>
-                            <div class="space-y-4">
-                                @foreach($event->ticketTypes as $ticket)
-                                    <div class="p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors cursor-pointer"
-                                        x-data="{
-                                            quantity: 0,
-                                            price: {{ $ticket->price }},
-                                            available: {{ $ticket->available_tickets }},
-                                            get total() {
-                                                return (this.quantity * this.price).toFixed(2);
-                                            }
-                                        }">
-                                        <div class="flex justify-between items-start mb-2">
-                                            <div>
-                                                <h3 class="font-semibold text-gray-900 dark:text-white">{{ $ticket->name }}</h3>
-                                                <p class="text-sm text-gray-500 dark:text-gray-400">
-                                                    {{ $ticket->available_tickets }} tickets left
-                                                </p>
+                            <form action="{{ route('booking.index') }}" method="">
+                                @csrf
+                                <input type="hidden" name="event_id" value="{{ $event->id }}">
+                                <div class="space-y-4">
+                                    @foreach($event->ticketTypes as $ticket)
+                                        <div class="p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors"
+                                            x-data="{
+                                                quantity: 0,
+                                                price: {{ $ticket->price }},
+                                                available: {{ $ticket->available_tickets }},
+                                                get total() {
+                                                    return (this.quantity * this.price).toFixed(2);
+                                                }
+                                            }">
+                                            <div class="flex justify-between items-start mb-2">
+                                                <div>
+                                                    <h3 class="font-semibold text-gray-900 dark:text-white">{{ $ticket->name }}</h3>
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                                                        {{ $ticket->available_tickets }} tickets left
+                                                    </p>
+                                                </div>
+                                                <span class="text-lg font-bold text-indigo-600 dark:text-indigo-400">${{ number_format($ticket->price, 2) }}</span>
                                             </div>
-                                            <span class="text-lg font-bold text-indigo-600 dark:text-indigo-400">${{ number_format($ticket->price, 2) }}</span>
+                                            <div class="flex items-center justify-between mt-4">
+                                                <div class="flex items-center space-x-2">
+                                                    <button type="button" @click="quantity = Math.max(0, quantity - 1)"
+                                                        class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                                                        <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                                                        </svg>
+                                                    </button>
+                                                    <input type="number"
+                                                        name="tickets[{{ $ticket->id }}]"
+                                                        x-model.number="quantity"
+                                                        :max="available"
+                                                        min="0"
+                                                        @change="quantity = Math.min(Math.max(0, quantity), available)"
+                                                        class="w-16 text-center border-gray-200 dark:border-gray-700 rounded-md">
+                                                    <button type="button" @click="quantity = Math.min(available, quantity + 1)"
+                                                        class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                                                        <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <div class="text-right">
+                                                    <span x-text="`$${total}`"
+                                                        class="font-semibold text-indigo-600 dark:text-indigo-400"></span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="flex items-center justify-between mt-4">
-                                            <div class="flex items-center space-x-2">
-                                                <button @click="quantity = Math.max(0, quantity - 1)"
-                                                    class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                                                    <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
-                                                    </svg>
-                                                </button>
-                                                <input type="number" x-model.number="quantity"
-                                                    :max="available" min="0"
-                                                    @change="quantity = Math.min(Math.max(0, quantity), available)"
-                                                    class="w-16 text-center border-gray-200 dark:border-gray-700 rounded-md">
-                                                <button @click="quantity = Math.min(available, quantity + 1)"
-                                                    class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                                                    <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                            <div class="text-right">
-                                                <span x-text="`$${total}`"
-                                                    class="font-semibold text-indigo-600 dark:text-indigo-400"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
 
-                                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-6">
-                                    <button class="w-full py-3 px-4 text-center bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                                        Proceed to Checkout
-                                    </button>
+                                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-6">
+                                        <button type="submit"
+                                            class="w-full py-3 px-4 text-center bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                                            Proceed to Checkout
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <!-- Similar Events Section -->

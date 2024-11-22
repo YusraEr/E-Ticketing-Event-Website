@@ -17,11 +17,17 @@ class Event extends Model
         'description',
         'event_date',
         'location',
-        'image'
+        'image',
+        'category_id',
     ];
 
     public function ticketTypes()
     {
         return $this->hasMany(TicketType::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

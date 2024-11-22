@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $events = Event::all();
+        $events = Event::with('category')->get();  // Add with('category') to eager load the relationship
         return view('home', compact('events'));
     }
 }
