@@ -1,1 +1,17 @@
 1. handle inputan di form create event
+2. booking tiket masih belum berfungsi
+3. semua dashboard masih belum jadi
+4. review masih belum jadi juga
+5. category tidak ada di
+
+list kategori
+- Konser dan Musik
+- Olahraga
+- Teater dan Seni Pertunjukan
+- Konferensi dan Seminar
+- Pameran dan Expo
+- Acara Keluarga dan Anak-anak
+- Festival dan Perayaan
+- Acara Komunitas
+- Film dan Media
+- Acara Virtual

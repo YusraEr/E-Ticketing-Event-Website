@@ -85,7 +85,7 @@
                                             price: {{ $ticket->price }},
                                             available: {{ $ticket->available_tickets }},
                                             get total() {
-                                                return (this.quantity * this.price).toFixed(2)
+                                                return (this.quantity * this.price).toFixed(2);
                                             }
                                         }">
                                         <div class="flex justify-between items-start mb-2">
@@ -125,10 +125,6 @@
                                 @endforeach
 
                                 <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-6">
-                                    <div class="flex justify-between mb-4">
-                                        <span class="font-semibold text-gray-900 dark:text-white">Total Amount:</span>
-                                        <span class="font-bold text-indigo-600 dark:text-indigo-400 text-xl">$0.00</span>
-                                    </div>
                                     <button class="w-full py-3 px-4 text-center bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
                                         Proceed to Checkout
                                     </button>
@@ -137,7 +133,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <!-- Similar Events Section -->
