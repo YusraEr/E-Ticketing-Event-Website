@@ -10,7 +10,7 @@ class Booking extends Model
         'event_id',
         'user_id',
         'quantity',
-        'total',
+        'total_amount'
     ];
 
     public function event()
@@ -21,5 +21,10 @@ class Booking extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(BookingTicket::class);
     }
 }
