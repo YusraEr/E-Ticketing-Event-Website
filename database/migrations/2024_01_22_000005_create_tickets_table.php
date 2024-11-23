@@ -14,9 +14,11 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('booking_id')->constrained('bookings')->onDelete('cascade');
             $table->string('ticket_code');
             $table->foreignId('ticket_type')->constrained('ticket_types')->onDelete('cascade');
+            $table->decimal('price', 10, 2);
             $table->boolean('is_used')->default(false);
             $table->timestamps();
         });

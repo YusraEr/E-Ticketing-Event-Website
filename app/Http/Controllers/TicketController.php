@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ticket;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TicketController extends Controller
 {
@@ -19,15 +22,22 @@ class TicketController extends Controller
      */
     public function create()
     {
-        //
+        return view('ticket.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store($userData)
     {
-        //
+        return Ticket::create([
+            'user_id' => $userData['user_id'],
+            'ticket_type' => $userData['ticket_type_id'],
+            'booking_id' => $userData['booking_id'],
+            'ticket_code' => 'TIC-' . strtoupper(Str::random(8)),
+            'price' => $userData['price'],
+            'is_used' => false,
+        ]);
     }
 
     /**

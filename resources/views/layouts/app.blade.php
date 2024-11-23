@@ -39,9 +39,7 @@
     </div>
     <script src="{{ asset('js/event.js') }}"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script>
-        window.tickets = @json($tickets);
-    </script>
+
     <script src="{{ asset('js/booking.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 </body>

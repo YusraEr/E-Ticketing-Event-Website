@@ -16,7 +16,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
-            $table->decimal('total_amount', 10, 2); 
+            $table->decimal('total_amount', 10, 2);
+            $table->integer('total_tickets');
             $table->timestamps();
         });
     }

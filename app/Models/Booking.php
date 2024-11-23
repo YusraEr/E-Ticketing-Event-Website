@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
@@ -9,8 +8,8 @@ class Booking extends Model
     protected $fillable = [
         'event_id',
         'user_id',
-        'quantity',
-        'total_amount'
+        'total_amount',
+        'total_tickets',
     ];
 
     public function event()
@@ -25,6 +24,6 @@ class Booking extends Model
 
     public function tickets()
     {
-        return $this->hasMany(BookingTicket::class);
+        return $this->hasMany(Ticket::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Category;
+use App\Models\TicketType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -137,5 +138,26 @@ class EventController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Update available tickets after booking
+     */
+    public function updateAvailableTickets($ticketTypeId, $quantity)
+    {
+        try {
+            $ticketType = TicketType::findOrFail($ticketTypeId);
+
+            if ($ticketType->available_tickets < $quantity) {
+                throw new \Exception('Not enough tickets available');
+            }
+
+            $ticketType->available_tickets -= $quantity;
+            $ticketType->save();
+
+            return true;
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to update ticket availability: ' . $e->getMessage());
+        }
     }
 }

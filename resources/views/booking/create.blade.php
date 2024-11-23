@@ -14,7 +14,7 @@
                     </div>
 
                     <!-- Form Section -->
-                    <form method="POST" action="{{ route('booking.store') }}" class="p-6 space-y-8">
+                    <form method="POST" action="{{ route('booking.store') }}" id="booking-form" class="p-6 space-y-8">
                         @csrf
                         <input type="hidden" name="event_id" value="{{ request('event_id') }}">
 
@@ -41,7 +41,7 @@
                                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                                         <div class="flex-grow">
                                             <h4 class="font-medium text-gray-900">{{ $ticket->name }}</h4>
-                                            <p class="text-blue-600 font-medium">${{ number_format($ticket->price, 2) }}</p>
+                                            <p class="text-blue-600 font-medium" data-price="{{ $ticket->price }}">${{ number_format($ticket->price, 2) }}</p>
                                             <p class="text-sm text-gray-500 mt-1">
                                                 <span class="inline-flex items-center">
                                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,13 +53,13 @@
                                             </p>
                                         </div>
                                         <div class="flex items-center space-x-3">
-                                            <button type="button" class="quantity-btn minus w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors">
+                                            <button type="button" class="quantity-btn minus w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors" data-ticket-id="{{ $ticket->id }}">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                                             </button>
                                             <input type="number" name="quantities[{{ $ticket->id }}]" value="0" min="0"
-                                                max="{{ $ticket->available_tickets }}" step="1"
-                                                class="w-16 text-center border border-gray-300 rounded-lg px-2 py-2">
-                                            <button type="button" class="quantity-btn plus w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors">
+                                                max="{{ $ticket->available_tickets }}" step="1" data-ticket-id="{{ $ticket->id }}"
+                                                class="quantity-input w-16 text-center border border-gray-300 rounded-lg px-2 py-2">
+                                            <button type="button" class="quantity-btn plus w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors" data-ticket-id="{{ $ticket->id }}">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                             </button>
                                         </div>
