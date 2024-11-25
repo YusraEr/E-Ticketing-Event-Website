@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\DashboardController;
 
 Route::middleware('auth')->group(function () {
@@ -35,5 +36,9 @@ Route::get('main', function () {
     return view('dashboard');
 })->name('main')->middleware('auth');
 
+Route::middleware('auth')->group(function () {
+    Route::post('/favorites', [FavoriteController::class, 'store'])->name('favorites.store');
+    Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+});
 
 require __DIR__ . '/auth.php';

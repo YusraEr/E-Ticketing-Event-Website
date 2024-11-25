@@ -34,24 +34,56 @@ document.addEventListener('DOMContentLoaded', function() {
         selectedTicketsDiv.innerHTML = Object.values(selectedTickets).map(ticket => `
             <div class="py-2">
                 <div class="flex justify-between">
-                    <span class="text-gray-700">${ticket.name} x ${ticket.quantity}</span>
-                    <span class="text-gray-900">$${ticket.total.toFixed(2)}</span>
+                    <span class="text-teal-500">${ticket.name} x ${ticket.quantity}</span>
+                    <span class="text-teal-300">$${ticket.total.toFixed(2)}</span>
                 </div>
             </div>
         `).join('');
     }
 
-    // Handle quantity buttons
+    // Function to show warning message
+    function showWarning(message) {
+        // Remove any existing warnings
+        const existingWarning = document.querySelector('.warning-message');
+        if (existingWarning) {
+            existingWarning.remove();
+        }
+
+        const warningDiv = document.createElement('div');
+        warningDiv.className = 'warning-message fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-fade-in-down';
+        warningDiv.innerHTML = `
+            <div class="bg-slate-800/95 backdrop-blur-sm text-teal-400 px-6 py-3 rounded-lg shadow-lg border border-red-500/50
+                        flex items-center space-x-3">
+                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <span>${message}</span>
+            </div>
+        `;
+        document.body.appendChild(warningDiv);
+
+        setTimeout(() => {
+            warningDiv.remove();
+        }, 3000);
+    }
+
+    // Handle quantity buttons with availability check
     document.querySelectorAll('.quantity-btn').forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
             const ticketId = this.dataset.ticketId;
             const input = document.querySelector(`input[data-ticket-id="${ticketId}"]`);
             const currentValue = parseInt(input.value) || 0;
-            const maxValue = parseInt(input.max) || 999;
+            const maxValue = parseInt(input.max);
+            const ticket = tickets.find(t => t.id == ticketId);
 
-            if (this.classList.contains('plus') && currentValue < maxValue) {
-                input.value = currentValue + 1;
+            if (this.classList.contains('plus')) {
+                if (currentValue < maxValue) {
+                    input.value = currentValue + 1;
+                } else {
+                    showWarning(`Only ${maxValue} tickets available for ${ticket.name}`);
+                }
             } else if (this.classList.contains('minus') && currentValue > 0) {
                 input.value = currentValue - 1;
             }
@@ -60,11 +92,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle direct input changes
+    // Handle direct input changes with validation
     document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('change', updateTotals);
+        input.addEventListener('change', function() {
+            const maxValue = parseInt(this.max);
+            const currentValue = parseInt(this.value) || 0;
+            const ticketId = this.dataset.ticketId;
+            const ticket = tickets.find(t => t.id == ticketId);
+
+            if (currentValue > maxValue) {
+                this.value = maxValue;
+                showWarning(`Only ${maxValue} tickets available for ${ticket.name}`);
+            } else if (currentValue < 0) {
+                this.value = 0;
+            }
+
+            updateTotals();
+        });
     });
+
+    // Update the CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fade-in-down {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+        .animate-fade-in-down {
+
+            animation: fade-in-down 0.3s ease-out;
+        }
+    `;
+    document.head.appendChild(style);
 
     // Initial calculation
     updateTotals();
 });
+

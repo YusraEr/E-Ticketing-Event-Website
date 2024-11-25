@@ -1,0 +1,80 @@
+.swiper {
+    padding-bottom: 50px !important;
+}
+.swiper-pagination {
+    bottom: 0 !important;
+}
+.swiper-button-next, .swiper-button-prev {
+    top: calc(50% - 25px) !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+.swiper-button-next:hover, .swiper-button-prev:hover {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transform: scale(1.1);
+}
+
+.swiper-button-next:after, .swiper-button-prev:after {
+    font-size: 18px !important;
+    color: #4f46e5;
+    font-weight: bold;
+}
+.hero-parallax {
+    transform: translateY(var(--scroll-offset, 0));
+    transition: transform 0.1s ease-out;
+}
+.glass-nav {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.2);
+}
+.dark .glass-nav {
+    background: rgba(17, 24, 39, 0.8);
+}
+.hero-text-shadow {
+    text-shadow: 0 4px 3px rgba(0, 0, 0, 0.7);
+}
+.desc-text-shadow {
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.9);
+}
+.search-container {
+    box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.search-container:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 40px -4px rgba(0, 0, 0, 0.3),
+               0 0 20px -4px rgba(45, 212, 191, 0.15);
+}
+
+/* Glow effect utilities */
+.glow-on-hover {
+    transition: all 0.3s ease;
+}
+
+.glow-on-hover:hover {
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.3);
+}
+
+.button-glow:hover {
+    box-shadow: 0 0 25px rgba(20, 184, 166, 0.5);
+}
+
+/* Enhanced glass effect with glow */
+.glass-effect {
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(20, 184, 166, 0.1);
+    transition: all 0.3s ease;
+}
+
+.glass-effect:hover {
+    border-color: rgba(20, 184, 166, 0.3);
+    box-shadow: 0 0 30px rgba(20, 184, 166, 0.2);
+}
