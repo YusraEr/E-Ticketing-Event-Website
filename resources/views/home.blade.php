@@ -1,61 +1,11 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('layouts.app')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Laravel</title>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-    <!-- Add Swiper CSS -->
+@push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <!-- Styles / Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('style/home.css') }}">
+@endpush
 
-    <link rel="stylesheet" href="{{asset('style/home.css')}}">
-
-</head>
-
-<body class="bg-gradient-to-b from-slate-900 to-slate-800 min-h-screen">
-    <!-- Navbar with glass effect -->
-    <nav class="fixed w-full z-50 glass-nav transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <a href="/" class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400">
-                        EventHub
-                    </a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    @if (Route::has('login'))
-                        @auth
-                            <a href="{{ url('/dashboard') }}"
-                                class="px-4 py-2 rounded-lg bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 text-white hover:bg-slate-700/50 transition-all duration-300">
-                                Dashboard
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}"
-                                class="px-4 py-2 text-slate-700 dark:text-slate-200 hover:text-slate-900 transition-all duration-300">
-                                Login
-                            </a>
-
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}"
-                                    class="px-4 py-2 rounded-lg bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 transform hover:-translate-y-0.5">
-                                    Register
-                                </a>
-                            @endif
-                        @endauth
-                    @endif
-                </div>
-            </div>
-        </div>
-    </nav>
-
+@section('content')
     <!-- Hero Section with Parallax -->
     <div class="relative h-screen overflow-hidden">
         <div class="absolute inset-0 hero-parallax">
@@ -130,7 +80,7 @@
     <!-- Main Content -->
     <main>
         <!-- Latest Events Section -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <section id="featured" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400 mb-8">
                 Featured Events
             </h2>
@@ -173,7 +123,7 @@
                                 </div>
 
                                 <a href="{{ route('event.show', $event->id) }}"
-                                   class="inline-flex items-center justify-center w-full px-4 py-2 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-lg hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 transform group-hover:scale-[1.02] shadow-lg hover:shadow-teal-500/50 mt-auto">
+                                    class="inline-flex items-center justify-center w-full px-4 py-2 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-lg hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 transform group-hover:scale-[1.02] shadow-lg hover:shadow-teal-500/50 mt-auto">
                                     <span>View Details</span>
                                     <svg class="w-4 h-4 ml-2 transition-transform duration-300 transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -188,7 +138,7 @@
                 <div class="swiper-button-next"></div>
                 <div class="swiper-button-prev"></div>
             </div>
-        </div>
+        </section>
 
         <!-- Popular Events -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -354,67 +304,38 @@
     </div>
 
     <!-- Login Call to Action Section -->
-    <div class="bg-gradient-to-r from-slate-900 to-slate-800 py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-lg border border-slate-700/50">
-                <div class="text-center">
-                    <h2 class="text-3xl font-bold mb-4">
-                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400">
-                            Ready to Join the Experience?
-                        </span>
-                    </h2>
-                    <p class="text-gray-300 mb-8 max-w-2xl mx-auto">
-                        Create an account to unlock exclusive features, save your favorite events, and get personalized recommendations.
-                    </p>
-                    <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <a href="{{ route('login') }}"
-                            class="px-8 py-4 rounded-lg bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-500 hover:to-emerald-500 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-teal-500/30 hover:-translate-y-1">
-                            Log In Now
-                        </a>
-                        <a href="{{ route('register') }}"
-                            class="px-8 py-4 rounded-lg bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 text-white hover:bg-slate-700/50 transition-all duration-300">
-                            Create Account
-                        </a>
+    @guest
+        <div class="bg-gradient-to-r from-slate-900 to-slate-800 py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-lg border border-slate-700/50">
+                    <div class="text-center">
+                        <h2 class="text-3xl font-bold mb-4">
+                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400">
+                                Ready to Join the Experience?
+                            </span>
+                        </h2>
+                        <p class="text-gray-300 mb-8 max-w-2xl mx-auto">
+                            Create an account to unlock exclusive features, save your favorite events, and get personalized recommendations.
+                        </p>
+                        <div class="flex flex-col sm:flex-row justify-center gap-4">
+                            <a href="{{ route('login') }}"
+                                class="px-8 py-4 rounded-lg bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-500 hover:to-emerald-500 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-teal-500/30 hover:-translate-y-1">
+                                Log In Now
+                            </a>
+                            <a href="{{ route('register') }}"
+                                class="px-8 py-4 rounded-lg bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 text-white hover:bg-slate-700/50 transition-all duration-300">
+                                Create Account
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endguest
+@endsection
 
-    <!-- Footer -->
-    <footer class="bg-slate-800/50 backdrop-blur-sm border-t border-slate-700/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex flex-col items-center justify-between md:flex-row">
-                <div class="text-gray-500 dark:text-gray-400 text-sm">
-                    Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
-                </div>
-                <div class="mt-4 md:mt-0">
-                    <div class="flex space-x-6">
-                        <a href="" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
-                            <span class="sr-only">About</span>
-                            About
-                        </a>
-                        <a href="" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
-                            <span class="sr-only">Contact</span>
-                            Contact
-                        </a>
-                        <a href="" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
-                            <span class="sr-only">Privacy</span>
-                            Privacy
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
+@push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="{{ asset('js/home.js') }}"></script>
-    <script>
-        // Add parallax effect
-
-    </script>
-</body>
-
-</html>
+@endpush
 

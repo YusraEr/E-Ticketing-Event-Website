@@ -25,9 +25,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const total = subtotal + processingFee;
 
         // Update summary display
-        document.getElementById('subtotal').textContent = `Rp. ${subtotal.toFixed(2)}`;
-        document.getElementById('fee').textContent = `Rp. ${processingFee.toFixed(2)}`;
-        document.getElementById('total-amount').textContent = `Rp. ${total.toFixed(2)}`;
+        document.getElementById('subtotal').textContent = `Rp. ${subtotal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        document.getElementById('fee').textContent = `Rp. ${processingFee.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        document.getElementById('total-amount').textContent = `Rp. ${total.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
         // Update selected tickets summary
         const selectedTicketsDiv = document.getElementById('selected-tickets');
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const quantities = document.querySelectorAll('.quantity-input');
         const submitButton = document.getElementById('submit-booking');
         const errorDiv = document.getElementById('booking-error');
-        
+
         let totalQuantity = 0;
         quantities.forEach(input => {
             totalQuantity += parseInt(input.value) || 0;

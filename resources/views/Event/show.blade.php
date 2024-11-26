@@ -168,7 +168,7 @@
                                                         {{ $ticket->available_tickets }} tickets left
                                                     </p>
                                                 </div>
-                                                <span class="text-lg font-bold text-teal-400">${{ number_format($ticket->price, 2) }}</span>
+                                                <span class="text-lg font-bold text-teal-400">Rp {{ number_format($ticket->price, 0, ',', '.') }}</span>
                                             </div>
                                             <div class="flex items-center justify-between mt-4">
                                                 <div class="flex items-center space-x-2">
@@ -193,7 +193,7 @@
                                                     </button>
                                                 </div>
                                                 <div class="text-right">
-                                                    <span x-text="`$${total}`"
+                                                    <span x-text="`Rp ${total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`"
                                                         class="font-semibold text-teal-400"></span>
                                                 </div>
                                             </div>

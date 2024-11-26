@@ -90,13 +90,13 @@
                                         <label class="block text-sm font-medium text-gray-300 mb-2">Event Description *</label>
                                         <div class="rounded-lg bg-slate-900/50 border-2 border-slate-700/50 focus-within:border-teal-500
                                                     focus-within:ring-2 focus-within:ring-teal-500/20 transition-all duration-200">
-                                            <textarea name="description" id="description" rows="5" required maxlength="500"
+                                            <textarea name="description" id="description" rows="5" required maxlength="1500"
                                                       class="w-full px-4 py-3 rounded-lg bg-transparent border-0 text-gray-200
                                                              focus:ring-0 resize-none"></textarea>
                                             <div class="px-4 py-2 border-t border-slate-700/50 flex justify-between items-center bg-slate-800/30">
                                                 <span class="text-xs text-gray-500">Use markdown for formatting</span>
                                                 <span class="text-xs text-gray-500">
-                                                    <span id="char-count">0</span>/500
+                                                    <span id="char-count">0</span>/1500
                                                 </span>
                                             </div>
                                         </div>

@@ -58,7 +58,7 @@
                                         <div class="flex-grow">
                                             <h4 class="font-medium text-teal-400">{{ $ticket->name }}</h4>
                                             <p class="text-emerald-400 font-medium" data-price="{{ $ticket->price }}">
-                                                ${{ number_format($ticket->price, 2) }}
+                                                Rp {{ number_format($ticket->price, 0, ',', '.')}}
                                             </p>
                                             <p class="text-sm text-gray-400 mt-1 flex items-center">
                                                 <svg class="w-4 h-4 mr-1 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,7 +147,7 @@
 
                             <p class="text-xs text-gray-400 text-center mt-4">
                                 By completing this booking, you agree to our
-                                <a href="#" class="text-teal-400 hover:text-teal-300 transition-colors duration-200">Terms of Service</a>
+                                <a href="" class="text-teal-400 hover:text-teal-300 transition-colors duration-200">Terms of Service</a>
                             </p>
                         </div>
                     </div>

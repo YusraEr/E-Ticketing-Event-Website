@@ -2,13 +2,13 @@
 
 @section('content')
     <!-- Hero Banner Carousel -->
-    <div class="relative overflow-hidden bg-gradient-to-r from-slate-900 via-teal-900 to-slate-900 h-[500px]">
-        <div class="swiper-container hero-swiper">
+    <div class="relative overflow-hidden bg-gradient-to-r from-slate-900 via-teal-900 to-slate-900 h-[calc(100vw*9/16)] max-h-[calc(1920px*9/16)]">
+        <div class="swiper-container hero-swiper h-full">
             <div class="swiper-wrapper">
                 @foreach ($events as $featured)
-                    <div class="swiper-slide relative">
+                    <div class="swiper-slide relative h-full">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
-                        <img src="{{ asset('storage/' . $featured->image) }}" class="w-full h-[500px] object-cover"
+                        <img src="{{ asset('storage/' . $featured->image) }}" class="w-full h-full object-cover"
                             alt="{{ $featured->name }}">
                         <div class="absolute bottom-0 left-0 right-0 p-8 z-20 text-white">
                             <h2
