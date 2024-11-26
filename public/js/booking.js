@@ -25,9 +25,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const total = subtotal + processingFee;
 
         // Update summary display
-        document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-        document.getElementById('fee').textContent = `$${processingFee.toFixed(2)}`;
-        document.getElementById('total-amount').textContent = `$${total.toFixed(2)}`;
+        document.getElementById('subtotal').textContent = `Rp. ${subtotal.toFixed(2)}`;
+        document.getElementById('fee').textContent = `Rp. ${processingFee.toFixed(2)}`;
+        document.getElementById('total-amount').textContent = `Rp. ${total.toFixed(2)}`;
 
         // Update selected tickets summary
         const selectedTicketsDiv = document.getElementById('selected-tickets');
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="py-2">
                 <div class="flex justify-between">
                     <span class="text-teal-500">${ticket.name} x ${ticket.quantity}</span>
-                    <span class="text-teal-300">$${ticket.total.toFixed(2)}</span>
+                    <span class="text-teal-300">Rp. ${ticket.total.toFixed(2)}</span>
                 </div>
             </div>
         `).join('');
@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             updateTotals();
+            updateSubmitButton();
         });
     });
 
@@ -108,8 +109,41 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             updateTotals();
+            updateSubmitButton();
         });
     });
+
+    function updateSubmitButton() {
+        const quantities = document.querySelectorAll('.quantity-input');
+        const submitButton = document.getElementById('submit-booking');
+        const errorDiv = document.getElementById('booking-error');
+        
+        let totalQuantity = 0;
+        quantities.forEach(input => {
+            totalQuantity += parseInt(input.value) || 0;
+        });
+
+        if (totalQuantity > 0) {
+            submitButton.disabled = false;
+            submitButton.classList.remove('cursor-not-allowed', 'opacity-50', 'from-teal-500/50', 'to-emerald-500/50');
+            submitButton.classList.add('from-teal-500', 'to-emerald-500', 'hover:from-teal-600', 'hover:to-emerald-600', 'hover:-translate-y-0.5');
+            errorDiv.classList.add('hidden');
+        } else {
+            submitButton.disabled = true;
+            submitButton.classList.add('cursor-not-allowed', 'opacity-50', 'from-teal-500/50', 'to-emerald-500/50');
+            submitButton.classList.remove('from-teal-500', 'to-emerald-500', 'hover:from-teal-600', 'hover:to-emerald-600', 'hover:-translate-y-0.5');
+            errorDiv.classList.remove('hidden');
+        }
+    }
+
+    // Add this line to your existing quantity change handlers
+    document.querySelectorAll('.quantity-input, .quantity-btn').forEach(element => {
+        element.addEventListener('change', updateSubmitButton);
+        element.addEventListener('click', updateSubmitButton);
+    });
+
+    // Call on page load
+    updateSubmitButton();
 
     // Update the CSS animation
     const style = document.createElement('style');

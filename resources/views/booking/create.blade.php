@@ -117,24 +117,31 @@
                             <div class="border-t border-slate-700/50 pt-4 mt-4">
                                 <div class="flex justify-between items-center text-sm text-gray-400">
                                     <span>Subtotal</span>
-                                    <span id="subtotal" class="text-teal-400">$0.00</span>
+                                    <span id="subtotal" class="text-teal-400">Rp. 0.00</span>
                                 </div>
                                 <div class="flex justify-between items-center mt-2 text-sm text-gray-400">
                                     <span>Processing Fee</span>
-                                    <span id="fee" class="text-teal-400">$0.00</span>
+                                    <span id="fee" class="text-teal-400">Rp. 0.00</span>
                                 </div>
                                 <div class="flex justify-between items-center mt-4 pt-4 border-t border-slate-700/50">
                                     <span class="text-lg font-semibold text-gray-300">Total</span>
                                     <span id="total-amount" class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">
-                                        $0.00
+                                        Rp. 0.00
                                     </span>
                                 </div>
                             </div>
 
-                            <button type="submit" form="booking-form"
-                                class="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-medium
-                                       hover:from-teal-600 hover:to-emerald-600 transform transition-all duration-300 hover:-translate-y-0.5
-                                       focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-800">
+                            <!-- Add this error alert div before the button -->
+                            <div id="booking-error" class="hidden">
+                                <p class="text-red-500 text-sm text-center mb-4">
+                                    Please select at least one ticket to continue
+                                </p>
+                            </div>
+
+                            <button type="submit" form="booking-form" id="submit-booking"
+                                class="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-teal-500/50 to-emerald-500/50 text-white font-medium
+                                       cursor-not-allowed opacity-50 transition-all duration-300"
+                                disabled>
                                 Complete Booking
                             </button>
 

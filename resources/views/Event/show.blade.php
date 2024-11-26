@@ -28,10 +28,10 @@
 
                             try {
                                 if (this.isFavorited) {
-                                    await axios.delete('/favorites/{{ $event->id }}');
+                                    await axios.delete('/favorite/{{ $event->id }}');
                                     this.isFavorited = false;
                                 } else {
-                                    await axios.post('/favorites', { event_id: {{ $event->id }} });
+                                    await axios.post('/favorite', { event_id: {{ $event->id }} });
                                     this.isFavorited = true;
                                 }
                             } catch (error) {

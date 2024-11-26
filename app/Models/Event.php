@@ -31,8 +31,17 @@ class Event extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

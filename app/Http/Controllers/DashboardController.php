@@ -9,18 +9,18 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index($section = 'bookings')
     {
         $bookings = Booking::with('event')->where('user_id', Auth::id())->get();
         $favorites = Favorite::with('event')->where('user_id', Auth::id())->get();
 
-        if (Auth::check()){
-            if (Auth::user()->role == 'admin'){
+        if (Auth::check()) {
+            if (Auth::user()->role == 'admin') {
                 return view('dashboard.admin');
-            } else if (Auth::user()->role == 'organizer'){
+            } else if (Auth::user()->role == 'organizer') {
                 return view('dashboard.organizer');
             }
-            return view("dashboard.user", compact('bookings', 'favorites'));
+            return view("dashboard.user", compact('bookings', 'favorites', 'section'));
         }
         return redirect()->route('login');
     }

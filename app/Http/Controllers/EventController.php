@@ -16,7 +16,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::paginate(10);
+        $events = Event::with('favorites', 'bookings')->paginate(10);
         $categories = Category::all();
         return view('event.index', compact( 'events', 'categories'));
     }

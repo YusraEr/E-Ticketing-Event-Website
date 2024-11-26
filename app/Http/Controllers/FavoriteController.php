@@ -24,8 +24,19 @@ class FavoriteController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $request->user()->favorites()->where('event_id', $id)->delete();
+        try {
+            $favorite = $request->user()->favorites()->where('event_id', $id)->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Event removed from favorites'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
 
-        return response()->json(['success' => true]);
+                'success' => false,
+                'message' => 'Failed to remove from favorites'
+            ], 500);
+
+        }
     }
 }

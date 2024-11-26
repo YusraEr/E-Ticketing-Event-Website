@@ -50,6 +50,15 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
+        $quantities = $request->input('quantities', []);
+
+        // Validate that at least one ticket is selected
+        if (array_sum($quantities) === 0) {
+            return redirect()->back()
+                ->withErrors(['tickets' => 'Please select at least one ticket'])
+                ->withInput();
+        }
+
         $request->validate([
             'event_id' => 'required|exists:events,id',
             'quantities' => 'required|array'
@@ -90,8 +99,6 @@ class BookingController extends Controller
             foreach ($request->quantities as $ticketTypeId => $quantity) {
                 if ($quantity > 0) {
                     $ticketType = $tickets->find($ticketTypeId);
-
-                    // Update available tickets using EventController
                     $this->eventController->updateAvailableTickets($ticketTypeId, $quantity);
 
                     // Create individual tickets
@@ -107,9 +114,8 @@ class BookingController extends Controller
                 }
             }
 
-            return redirect()->route('dashboard')
+            return redirect()->route('booking.show', $booking->id)
                 ->with('success', 'Booking created successfully!');
-
         } catch (\Exception $e) {
             return back()
                 ->with('error', 'Booking failed: ' . $e->getMessage())
@@ -122,7 +128,8 @@ class BookingController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $booking = Booking::with(['event.user', 'tickets.ticketType', 'user'])->findOrFail($id);
+        return view('booking.show', compact('booking'));
     }
 
     /**

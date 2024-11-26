@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="relative min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" x-data="{...userDashboard(), activeTab: 'bookings'}" x-cloak>
+<div class="relative min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" 
+    x-data="{...userDashboard(), activeTab: '{{ request()->section ?? 'bookings' }}'}" x-cloak>
     <!-- Animated Background -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
         <div class="absolute w-96 h-96 -top-48 -left-48 bg-teal-500/20 rounded-full blur-3xl animate-blob"></div>

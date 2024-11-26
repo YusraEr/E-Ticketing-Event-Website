@@ -74,7 +74,7 @@
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
                     <a href="{{route('event.index')}}"
-                       class="px-8 py-4 rounded-lg bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 transform hover:-translate-y-1">
+                       class="px-8 py-4 rounded-lg bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-500 hover:to-emerald-500 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-teal-500/30 hover:-translate-y-1">
                         Explore Events
                     </a>
                     <a href="#featured"
@@ -119,8 +119,7 @@
                 <div class="flex items-end">
                     <button type="submit"
                         class="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-xl
-                        hover:from-teal-600 hover:to-emerald-600 focus:ring-2 focus:ring-teal-500 focus:ring-offset-2
-                        focus:ring-offset-slate-900 transition-all duration-300 transform hover:-translate-y-0.5">
+                        hover:from-teal-500 hover:to-emerald-500 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-teal-500/30 hover:-translate-y-1">
                         Search
                     </button>
                 </div>
@@ -369,7 +368,7 @@
                     </p>
                     <div class="flex flex-col sm:flex-row justify-center gap-4">
                         <a href="{{ route('login') }}"
-                            class="px-8 py-4 rounded-lg bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 transform hover:-translate-y-1">
+                            class="px-8 py-4 rounded-lg bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-500 hover:to-emerald-500 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-teal-500/30 hover:-translate-y-1">
                             Log In Now
                         </a>
                         <a href="{{ route('register') }}"

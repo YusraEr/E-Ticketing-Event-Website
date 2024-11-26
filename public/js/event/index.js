@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Hero Swiper
     if (document.querySelector('.hero-swiper')) {
@@ -19,15 +18,34 @@ document.addEventListener('DOMContentLoaded', function() {
         new Swiper('.popular-events', {
             slidesPerView: 1,
             spaceBetween: 20,
+            loop: true,
+            autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+            effect: "slide",
+            speed: 1500,
+            cssMode: false,
+            grabCursor: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
             pagination: {
                 el: '.swiper-pagination',
                 clickable: true,
+                dynamicBullets: true,
+                dynamicMainBullets: 3,
             },
             breakpoints: {
-                640: { slidesPerView: 2 },
-                768: { slidesPerView: 3 },
-                1024: { slidesPerView: 4 },
-            },
+                640: {
+                    slidesPerView: 3,
+                },
+                1024: {
+                    slidesPerView: 4,
+                },
+
+            }
         });
     }
 

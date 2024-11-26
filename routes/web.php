@@ -30,15 +30,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/booking/{booking}', [BookingController::class, 'show'])->name('booking.show');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware('auth')
+    ->name('dashboard');
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('main', function () {
     return view('dashboard');
 })->name('main')->middleware('auth');
 
 Route::middleware('auth')->group(function () {
-    Route::post('/favorites', [FavoriteController::class, 'store'])->name('favorites.store');
-    Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+    Route::post('/favorite', [FavoriteController::class, 'store'])->name('favorite.store');
+    Route::delete('/favorite/{id}', [FavoriteController::class, 'destroy'])->name('favorite.destroy');
 });
 
 require __DIR__ . '/auth.php';
