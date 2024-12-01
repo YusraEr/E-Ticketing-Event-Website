@@ -1,6 +1,0 @@
-1. handle inputan di form create event
-2. booking tiket masih belum berfungsi
-3. semua dashboard masih belum jadi
-4. review masih belum jadi juga
-5. category tidak ada di -aman
-6. booking selesai masih error

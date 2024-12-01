@@ -21,10 +21,12 @@ class DashboardController extends Controller
         $users = User::all();
         $events = Event::with(['bookings', 'favorites'])->get();
         $bookings = Booking::all();
+        $myEvents = Event::with(['bookings', 'favorites'])->where('user_id', Auth::id())->get();
+
 
         if (Auth::check()) {
             if (Auth::user()->role == 'admin') {
-                return view('dashboard.admin', compact('users', 'events', 'bookings'));
+                return view('dashboard.admin', compact('users', 'events', 'bookings','myEvents'));
             } else if (Auth::user()->role == 'organizer') {
                 return view('dashboard.organizer');
             }

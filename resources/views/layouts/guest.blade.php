@@ -28,7 +28,7 @@
     </div>
 
     <!-- Navigation with improved design -->
-    <nav class="fixed w-full z-50 backdrop-blur-md bg-slate-900/50 border-b border-slate-700/50">
+    <nav class="sticky w-full z-50 backdrop-blur-md bg-slate-900/50 border-b border-slate-700/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-3 group">

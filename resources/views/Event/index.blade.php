@@ -43,10 +43,9 @@
             <h2 class="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">
                 Top Events This Week
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                @foreach ($events as $event)
-                    <div
-                        class="bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-teal-500/20 transition-all duration-300 overflow-hidden border border-slate-700/50 group">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="topEventsGrid">
+                @foreach ($events as $key => $event)
+                    <div class="event-card {{ $key >= 6 ? 'hidden' : '' }} bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-teal-500/20 transition-all duration-300 overflow-hidden border border-slate-700/50 group">
                         <div class="relative overflow-hidden">
                             <img src="{{ asset('storage/' . $event->image) }}"
                                 class="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-500"
@@ -85,6 +84,13 @@
                     </div>
                 @endforeach
             </div>
+            @if ($events->count() > 6)
+                <div class="text-center mt-6">
+                    <button id="showMoreEvents" class="inline-block bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-6 py-3 rounded-lg hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-teal-500/50">
+                        Show More
+                    </button>
+                </div>
+            @endif
         </section>
 
         <!-- Popular Events -->

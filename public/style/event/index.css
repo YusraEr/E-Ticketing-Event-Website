@@ -1,10 +1,21 @@
 /* Event Cards */
 .event-card {
-    @apply bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-teal-500/20 transition-all duration-300 overflow-hidden border border-slate-700/50 group;
+    @apply bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-teal-500/20 overflow-hidden border border-slate-700/50 group;
+    transition: all 0.2s ease-in-out;
+    max-height: 1000px; /* Tinggi maksimal ketika card terlihat */
 }
 
 .event-card img {
     @apply w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-500;
+}
+
+.event-card.hidden {
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
 }
 
 /* Pagination Styling */

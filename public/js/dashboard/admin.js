@@ -242,21 +242,6 @@ function handleImageUpload(event) {
     editingEvent.image = file;
 }
 
-// Refresh functions
-function refreshUsers() {
-    fetch('/api/users')
-        .then(response => response.json())
-        .then(data => {
-            // Update user table
-        });
-}
 
-function refreshEvents() {
-    fetch('/api/events')
-        .then(response => response.json())
-        .then(data => {
-            // Update events grid
-        });
-}
 
 

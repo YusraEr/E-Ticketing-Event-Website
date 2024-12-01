@@ -7,29 +7,38 @@
     <div class="bg-slate-900/80 backdrop-blur-sm rounded-2xl border border-slate-800/80 overflow-hidden">
         <div class="p-6 border-b border-slate-800/80 flex justify-between items-center">
             <h2 class="text-xl font-semibold text-white">Event Management</h2>
-            <button @click="createEvent()"
+            <a href="{{route('event.create')}}"
                     class="px-4 py-2 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-lg hover:from-teal-400 hover:to-emerald-400 transition-all duration-300 transform hover:-translate-y-0.5">
                 Create Event
-            </button>
+            </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-            @foreach($events as $event)
-            <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 hover:border-teal-500/50 transition-all duration-300 transform hover:-translate-y-1">
-                <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden mb-4">
-                    <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->name }}" class="object-cover">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+            @foreach($myEvents as $event)
+            <div class="bg-slate-800/50 rounded-xl overflow-hidden border border-slate-700/50 hover:border-teal-500/50 transition-all duration-300 transform hover:-translate-y-1">
+                <div class="aspect-w-16 aspect-h-9">
+                    <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->name }}" class="object-cover w-full h-full">
                 </div>
-                <h3 class="text-lg font-medium text-white mb-2">{{ $event->name }}</h3>
-                <p class="text-sm text-slate-400 mb-4">{{ $event->description }}</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-slate-300">{{ $event->event_date }}</span>
-                    <div class="space-x-2">
-                        <button @click="editEvent({{ $event->id }})" class="text-teal-400 hover:text-teal-300">Edit</button>
-                        <button @click="deleteEvent({{ $event->id }})" class="text-red-400 hover:text-red-300">Delete</button>
+                <div class="p-4">
+                    <h3 class="text-lg font-medium text-white truncate">{{ $event->name }}</h3>
+                    <p class="text-sm text-slate-400 line-clamp-2 h-10 mb-3">{{ $event->description }}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-300 bg-slate-700/50 px-2 py-1 rounded">{{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}</span>
+                        <div class="space-x-2">
+                            <a href="{{ route('event.edit', $event->id) }}"
+                                class="text-xs px-2 py-1 bg-teal-500/20 text-teal-400 rounded hover:bg-teal-500/30 transition-colors">
+                                Edit
+                            </a>
+                            <button @click="deleteEvent({{ $event->id }})"
+                                class="text-xs px-2 py-1 bg-red-500/20 text-red-400 rounded hover:bg-red-500/30 transition-colors">
+                                Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
             @endforeach
         </div>
+
     </div>
 </div>

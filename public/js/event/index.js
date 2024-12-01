@@ -77,4 +77,60 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = url.toString();
         });
     });
+
+    // Show More/Less Events functionality
+    const showMoreBtn = document.getElementById('showMoreEvents');
+    const eventCards = document.querySelectorAll('#topEventsGrid .event-card');
+    let isExpanded = false;
+
+    if (showMoreBtn) {
+        showMoreBtn.addEventListener('click', function() {
+            const hiddenCards = document.querySelectorAll('#topEventsGrid .event-card.hidden');
+
+            if (!isExpanded) {
+                // Show More
+                hiddenCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.remove('hidden');
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(-50px)';
+
+                        // Trigger reflow
+                        card.offsetHeight;
+
+                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 200);
+                });
+                showMoreBtn.textContent = 'Show Less';
+                isExpanded = true;
+            } else {
+                // Show Less
+                const allCards = Array.from(eventCards);
+                allCards.slice(6).forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(-50px)';
+
+                        setTimeout(() => {
+                            card.classList.add('hidden');
+                            card.style.transform = '';
+                            card.style.opacity = '';
+                        }, 500);
+                    }, index * 200);
+                });
+                showMoreBtn.textContent = 'Show More';
+                isExpanded = false;
+
+                // Smooth scroll ke card terakhir yang visible
+                setTimeout(() => {
+                    const lastVisibleCard = document.querySelector('#topEventsGrid .event-card:not(.hidden):last-child');
+                    if (lastVisibleCard) {
+                        lastVisibleCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
+            }
+        });
+    }
 });
