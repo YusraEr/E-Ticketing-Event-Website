@@ -17,9 +17,26 @@ class EventController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::with('favorites', 'bookings')->paginate(10);
+        $query = Event::query();
+
+        // Handle search
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        // Handle category filtering
+        if ($request->has('category') && $request->category != '') {
+            $query->where('category_id', $request->category);
+        }
+
+        $events = $query->with('favorites', 'bookings')->paginate(10);
         $categories = Category::all();
         return view('event.index', compact( 'events', 'categories'));
     }
@@ -30,7 +47,7 @@ class EventController extends Controller
     public function create()
     {
         if (!Auth::check()) {
-            return redirect()->route('login');
+            return redirect()->route('login')->with('warning', 'Please login to create an event.');
         }
         $categories = Category::all();
         return view('event.create', compact('categories'));
@@ -42,7 +59,7 @@ class EventController extends Controller
     public function store(Request $request)
     {
         if (!Auth::check()) {
-            return redirect()->route('login');
+            return redirect()->route('login')->with('warning', 'Please login to create an event.');
         }
 
         try {
@@ -117,8 +134,12 @@ class EventController extends Controller
      */
     public function show(string $id)
     {
-        $event = Event::with('ticketTypes')->findOrFail($id);
-        return view('event.show', compact('event'));
+        try {
+            $event = Event::with('ticketTypes')->findOrFail($id);
+            return view('event.show', compact('event'));
+        } catch (\Exception $e) {
+            return redirect()->route('event.index')->with('error', 'Event not found.');
+        }
     }
 
     /**
@@ -126,16 +147,20 @@ class EventController extends Controller
      */
     public function edit(string $id)
     {
-        $event = Event::with('ticketTypes')->findOrFail($id);
+        try {
+            $event = Event::with('ticketTypes')->findOrFail($id);
 
-        // Check if user is authorized to edit this event
-        if ($event->user_id !== Auth::id()) {
-            return redirect()->route('event.index')
-                ->with('error', 'You are not authorized to edit this event.');
+            // Check if user is authorized to edit this event
+            if ($event->user_id !== Auth::id()) {
+                return redirect()->route('event.index')
+                    ->with('warning', 'You are not authorized to edit this event.');
+            }
+
+            $categories = Category::all();
+            return view('event.edit', compact('event', 'categories'));
+        } catch (\Exception $e) {
+            return redirect()->route('event.index')->with('error', 'Event not found.');
         }
-
-        $categories = Category::all();
-        return view('event.edit', compact('event', 'categories'));
     }
 
     /**
@@ -289,8 +314,7 @@ class EventController extends Controller
 
             return true;
         } catch (\Exception $e) {
-
-            throw new \Exception('Failed to update ticket availability: ' . $e->getMessage());
+            throw new \Exception('Failed to update ticket availability. ' . $e->getMessage());
         }
     }
 
@@ -299,21 +323,25 @@ class EventController extends Controller
      */
     public function showQueue(string $id)
     {
-        $event = Event::with(['ticketTypes', 'bookings.tickets.ticketType'])
-            ->findOrFail($id);
+        try {
+            $event = Event::with(['ticketTypes', 'bookings.tickets.ticketType'])
+                ->findOrFail($id);
 
-        $ticketQueues = $event->bookings()
-            ->with(['user', 'event', 'tickets.ticketType'])
-            ->get()
-            ->groupBy('status');
+            $ticketQueues = $event->bookings()
+                ->with(['user', 'event', 'tickets.ticketType'])
+                ->get()
+                ->groupBy('status');
 
-        $queuesByStatus = [
-            'pending' => $ticketQueues->get('pending', collect()),
-            'ready' => $ticketQueues->get('ready', collect()),
-            'rejected' => $ticketQueues->get('rejected', collect()),
-        ];
+            $queuesByStatus = [
+                'pending' => $ticketQueues->get('pending', collect()),
+                'ready' => $ticketQueues->get('ready', collect()),
+                'rejected' => $ticketQueues->get('rejected', collect()),
+            ];
 
-        return view('event.queue', compact('event', 'queuesByStatus'));
+            return view('event.queue', compact('event', 'queuesByStatus'));
+        } catch (\Exception $e) {
+            return redirect()->route('event.index')->with('error', 'Failed to load ticket queue.');
+        }
     }
 
     /**
@@ -340,7 +368,7 @@ class EventController extends Controller
             });
 
             Log::info('Successfully approved booking: ' . $id);
-            return redirect()->back()->with('success', 'Ticket request approved successfully!');
+            return redirect()->back()->with('success', 'Ticket request has been approved successfully.');
         } catch (\Exception $e) {
             Log::error('Approval error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to approve ticket: ' . $e->getMessage());
@@ -378,7 +406,7 @@ class EventController extends Controller
             });
 
             Log::info('Successfully rejected booking: ' . $id);
-            return redirect()->back()->with('success', 'Ticket request rejected successfully!');
+            return redirect()->back()->with('success', 'Ticket request has been rejected successfully.');
         } catch (\Exception $e) {
             Log::error('Rejection error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to reject ticket: ' . $e->getMessage());
@@ -394,7 +422,6 @@ class EventController extends Controller
             $pendingBookings = $event->bookings()->where('status', 'pending')->get();
 
             if ($pendingBookings->isEmpty()) {
-
                 return redirect()->back()->with('info', 'No pending tickets to approve.');
             }
 
@@ -408,13 +435,62 @@ class EventController extends Controller
             });
 
             Log::info('Successfully approved all pending bookings for event: ' . $eventId);
-            return redirect()->back()->with('success', 'All pending tickets have been approved!');
+            return redirect()->back()->with('success', 'All pending tickets have been approved successfully.');
         } catch (\Exception $e) {
             Log::error('Bulk approval error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to approve tickets: ' . $e->getMessage());
         }
     }
+
+    public function filterEvents(Request $request)
+    {
+        $query = Event::query();
+
+        if ($request->search) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->category) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->location) {
+            $query->where('location', $request->location);
+        }
+
+        if ($request->date) {
+            $query->whereDate('event_date', $request->date);
+        }
+
+        if ($request->sort) {
+            switch ($request->sort) {
+                case 'date-asc':
+                    $query->orderBy('event_date', 'asc');
+                    break;
+                case 'date-desc':
+                    $query->orderBy('event_date', 'desc');
+                    break;
+                case 'name-asc':
+                    $query->orderBy('name', 'asc');
+                    break;
+                case 'name-desc':
+                    $query->orderBy('name', 'desc');
+                    break;
+            }
+        }
+
+        $events = $query->with('favorites', 'bookings')->get();
+
+        return view('event.partials.event-grid', compact('events'))->render();
+    }
 }
+
 
 
 

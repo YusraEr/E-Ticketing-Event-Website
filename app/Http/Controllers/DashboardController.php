@@ -13,33 +13,78 @@ class DashboardController extends Controller
 {
     public function index($section = 'bookings')
     {
-        $activeTab = session('activeTab', 'events'); // default to 'events' if not set
-
-        // user
-        $bookings = Booking::with('event')->where('user_id', Auth::id())->get();
-        $favorites = Favorite::with('event')->where('user_id', Auth::id())->get();
-
-        // admin
-        $users = User::all();
-        $events = Event::with(['bookings', 'favorites'])->get();
-        $bookings = Booking::all();
-        $myEvents = Event::with(['bookings', 'favorites'])->where('user_id', Auth::id())->get();
-
-        if (Auth::check()) {
-            if (Auth::user()->role == 'admin') {
-                return view('dashboard.admin', compact('users', 'events', 'bookings','myEvents'));
-            } else if (Auth::user()->role == 'organizer') {
-                return view('dashboard.organizer', compact('events', 'bookings','myEvents'));
+        try {
+            if (!Auth::check()) {
+                return redirect()->route('login')->with('warning', 'Please login to access the dashboard.');
             }
-            return view("dashboard.user", compact('bookings', 'favorites', 'section', 'activeTab'));
+
+            $activeTab = session('activeTab', 'events');
+
+            // User data
+            $user = Auth::user();
+
+            switch ($user->role) {
+                case 'admin':
+                    $data = $this->getAdminData();
+                    return view('dashboard.admin', $data)->with('success', 'Welcome to admin dashboard!');
+
+                case 'organizer':
+                    $data = $this->getOrganizerData();
+                    return view('dashboard.organizer', $data)->with('success', 'Welcome to organizer dashboard!');
+
+                default:
+                    $data = $this->getUserData($section, $activeTab);
+                    return view('dashboard.user', $data)->with('success', 'Welcome to your dashboard!');
+            }
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to load dashboard: ' . $e->getMessage());
         }
-        return redirect()->route('login');
+    }
+
+    private function getAdminData()
+    {
+        return [
+            'users' => User::all(),
+            'events' => Event::with(['bookings', 'favorites'])->get(),
+            'bookings' => Booking::all(),
+            'myEvents' => Event::with(['bookings', 'favorites'])->where('user_id', Auth::id())->get()
+        ];
+    }
+
+    private function getOrganizerData()
+    {
+        return [
+            'events' => Event::with(['bookings', 'favorites'])->get(),
+            'bookings' => Booking::all(),
+            'myEvents' => Event::with(['bookings', 'favorites'])->where('user_id', Auth::id())->get()
+        ];
+    }
+
+    private function getUserData($section, $activeTab)
+    {
+        return [
+            'bookings' => Booking::with('event')->where('user_id', Auth::id())->get(),
+            'favorites' => Favorite::with('event')->where('user_id', Auth::id())->get(),
+            'section' => $section,
+            'activeTab' => $activeTab
+        ];
     }
 
     public function saveTabState(Request $request)
-
     {
-        $request->session()->put('activeTab', $request->tab);
-        return response()->json(['success' => true]);
+        try {
+            $request->session()->put('activeTab', $request->tab);
+            return response()->json([
+                'success' => true,
+                'message' => 'Tab state saved successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to save tab state'
+            ], 500);
+        }
     }
 }
+

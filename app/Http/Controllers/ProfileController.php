@@ -26,15 +26,21 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        try {
+            $request->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+            if ($request->user()->isDirty('email')) {
+                $request->user()->email_verified_at = null;
+            }
+
+            $request->user()->save();
+
+            return Redirect::route('profile.edit')
+                ->with('success', 'Profile updated successfully!');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to update profile: ' . $e->getMessage());
         }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
@@ -42,19 +48,24 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
+        try {
+            $request->validateWithBag('userDeletion', [
+                'password' => ['required', 'current_password'],
+            ]);
 
-        $user = $request->user();
+            $user = $request->user();
+            Auth::logout();
+            $user->delete();
 
-        Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-        $user->delete();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+            return Redirect::to('/')->with('info', 'Your account has been deleted successfully.');
 
-        return Redirect::to('/');
+        } catch (\Exception $e) {
+
+            return back()->with('error', 'Failed to delete account: ' . $e->getMessage());
+        }
     }
 }

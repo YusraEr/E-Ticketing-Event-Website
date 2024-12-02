@@ -348,6 +348,40 @@ class EventFormHandler {
     }
 }
 
+function toggleFavorite(eventId) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const favoriteButton = document.querySelector(`[data-event-id="${eventId}"]`);
+    const isFavorited = favoriteButton.classList.contains('favorited');
+
+    const url = isFavorited
+        ? `/favorites/${eventId}`
+        : '/favorites';
+
+    const method = isFavorited ? 'DELETE' : 'POST';
+
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: method === 'POST' ? JSON.stringify({ event_id: eventId }) : null
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            favoriteButton.classList.toggle('favorited');
+            showAlert(data.message, 'success');
+        } else {
+            showAlert(data.message, 'error');
+        }
+    })
+    .catch(error => {
+        showAlert('An error occurred while processing your request.', 'error');
+    });
+}
+
 // Export functions if using modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {

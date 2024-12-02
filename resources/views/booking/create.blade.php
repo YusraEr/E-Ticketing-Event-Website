@@ -115,14 +115,6 @@
                             </div>
 
                             <div class="border-t border-slate-700/50 pt-4 mt-4">
-                                <div class="flex justify-between items-center text-sm text-gray-400">
-                                    <span>Subtotal</span>
-                                    <span id="subtotal" class="text-teal-400">Rp. 0.00</span>
-                                </div>
-                                <div class="flex justify-between items-center mt-2 text-sm text-gray-400">
-                                    <span>Processing Fee</span>
-                                    <span id="fee" class="text-teal-400">Rp. 0.00</span>
-                                </div>
                                 <div class="flex justify-between items-center mt-4 pt-4 border-t border-slate-700/50">
                                     <span class="text-lg font-semibold text-gray-300">Total</span>
                                     <span id="total-amount" class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">

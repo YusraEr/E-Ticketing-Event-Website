@@ -24,7 +24,6 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Custom Global CSS -->
-    <link rel="stylesheet" href="{{ asset('style/main.css') }}">
     <link rel="stylesheet" href="{{ asset('style/event.css') }}">
     <link rel="stylesheet" href="{{ asset('style/event/show.css') }}">
     <link rel="stylesheet" href="{{ asset('style/dashboard/user.css') }}">
@@ -47,6 +46,8 @@
             </header>
         @endisset
 
+        <x-alert/>
+
         <!-- Page Content -->
         <main>
             @yield('content')
@@ -63,7 +64,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Custom Global Scripts -->
-    <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/event.js') }}"></script>
     <script src="{{ asset('js/dashboard/user.js') }}"></script>
 

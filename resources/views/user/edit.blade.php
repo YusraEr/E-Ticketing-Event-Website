@@ -69,7 +69,7 @@
 
                     <!-- Action Buttons -->
                     <div class="flex justify-end space-x-4 pt-6">
-                        <a href="{{ route('home') }}"
+                        <a href="{{ url()->previous() }}"
                            class="px-6 py-3 rounded-lg bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 text-white
                                   hover:bg-slate-700/50 transition-all duration-300">
                             Cancel

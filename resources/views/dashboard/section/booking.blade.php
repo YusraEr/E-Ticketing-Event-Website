@@ -16,9 +16,9 @@
                 <select x-model="statusFilter"
                     class="w-full sm:w-48 px-4 py-2 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 text-white rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300">
                     <option value="all">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
+                    <option value="pending">Pending</option>
+                    <option value="ready">Completed</option>
+                    <option value="rejected">Rejected</option>
                 </select>
             </div>
         </div>
@@ -40,12 +40,12 @@
                 <!-- Booking Header -->
                 <div class="flex justify-between items-start mb-4">
                     <span class="text-sm text-slate-400">#{{ $booking->id }}</span>
-                    {{-- <span class="px-3 py-1 rounded-full text-xs font-medium
-                    {{ $booking->status === 'active' ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' :
-                       ($booking->status === 'completed' ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20' :
+                    <span class="px-3 py-1 rounded-full text-xs font-medium
+                    {{ $booking->status === 'ready' ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' :
+                       ($booking->status === 'pending' ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20' :
                         'bg-red-500/10 text-red-300 border border-red-500/20') }}">
                     {{ ucfirst($booking->status) }}
-                </span> --}}
+                </span>
                 </div>
 
                 <!-- Booking Details -->
@@ -93,7 +93,7 @@
             <h3 class="text-xl font-semibold text-white mb-2">No Bookings Yet</h3>
             <p class="text-gray-400 text-center mb-4">You haven't made any bookings yet. Start exploring events!</p>
             <a href="{{ route('event.index') }}"
-                class="px-6 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition">
+                class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-lg hover:from-teal-500 hover:to-emerald-500 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-teal-500/30">
                 Browse Events
             </a>
         </div>

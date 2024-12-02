@@ -26,15 +26,21 @@ class BookingController extends Controller
     public function index()
     {
         if (!Auth::check()) {
-            return redirect()->route('login');
+            return redirect()->route('login')->with('warning', 'Please login to make a booking.');
         }
 
-        $eventId = request('event_id');
-        $tickets = TicketType::where('event_id', $eventId)->get();
+        try {
+            $eventId = request('event_id');
+            $tickets = TicketType::where('event_id', $eventId)->get();
 
-        return view('booking.create', [
-            'tickets' => $tickets
-        ]);
+            if ($tickets->isEmpty()) {
+                return back()->with('info', 'No tickets available for this event.');
+            }
+
+            return view('booking.create', compact('tickets'));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to load booking form: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -50,21 +56,20 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-        $quantities = $request->input('quantities', []);
-
-        // Validate that at least one ticket is selected
-        if (array_sum($quantities) === 0) {
-            return redirect()->back()
-                ->withErrors(['tickets' => 'Please select at least one ticket'])
-                ->withInput();
-        }
-
-        $request->validate([
-            'event_id' => 'required|exists:events,id',
-            'quantities' => 'required|array'
-        ]);
-
         try {
+            $quantities = $request->input('quantities', []);
+
+            if (array_sum($quantities) === 0) {
+                return redirect()->back()
+                    ->with('warning', 'Please select at least one ticket')
+                    ->withInput();
+            }
+
+            $request->validate([
+                'event_id' => 'required|exists:events,id',
+                'quantities' => 'required|array'
+            ]);
+
             $user = Auth::user();
             $totalAmount = 0;
             $tickets = TicketType::whereIn('id', array_keys($request->quantities))->get();
@@ -112,7 +117,7 @@ class BookingController extends Controller
             }
 
             return redirect()->route('booking.show', $booking->id)
-                ->with('success', 'Booking created successfully!');
+                ->with('success', 'Booking created successfully! Please wait for approval.');
         } catch (\Exception $e) {
             return back()
                 ->with('error', 'Booking failed: ' . $e->getMessage())
@@ -125,8 +130,13 @@ class BookingController extends Controller
      */
     public function show(string $id)
     {
-        $booking = Booking::with(['event.user', 'tickets.ticketType', 'user'])->findOrFail($id);
-        return view('booking.show', compact('booking'));
+        try {
+            $booking = Booking::with(['event.user', 'tickets.ticketType', 'user'])->findOrFail($id);
+            return view('booking.show', compact('booking'));
+        } catch (\Exception $e) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Booking not found: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -152,4 +162,32 @@ class BookingController extends Controller
     {
         //
     }
+
+    public function cancel(Booking $booking)
+    {
+        if ($booking->created_at->diffInHours(now()) > 24) {
+            return back()->with('error', 'Bookings can only be cancelled within 24 hours of creation.');
+        }
+
+        try {
+            $booking->status = 'cancelled';
+
+            $totalTickets = $booking->total_tickets;
+
+            $booking->tickets()->delete();
+
+            $event = $booking->event;
+            $event->available_tickets += $totalTickets;
+
+            $booking->save();
+            $event->save();
+
+            return redirect()->route('dashboard')
+                ->with('success', 'Booking cancelled successfully.');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to cancel booking. Please try again.');
+        }
+    }
 }
+

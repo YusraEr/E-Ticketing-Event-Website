@@ -2,7 +2,8 @@
 
 @section('content')
     <!-- Hero Banner Carousel -->
-    <div class="relative overflow-hidden bg-gradient-to-r from-slate-900 via-teal-900 to-slate-900 h-[calc(100vw*9/16)] max-h-[calc(1920px*9/16)]">
+    <div
+        class="relative overflow-hidden bg-gradient-to-r from-slate-900 via-teal-900 to-slate-900 h-[calc(100vw*9/16)] max-h-[calc(1920px*9/16)]">
         <div class="swiper-container hero-swiper h-full">
             <div class="swiper-wrapper">
                 @foreach ($events as $featured)
@@ -15,7 +16,7 @@
                                 class="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">
                                 {{ $featured->name }}</h2>
                             <p class="text-xl mb-4 text-gray-200">{{ $featured->description }}</p>
-                            <a href="{{ route('event.queue', $featured->id) }}"
+                            <a href="{{ route('event.show', $featured->id) }}"
                                 class="inline-block bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-6 py-3 rounded-lg hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-teal-500/50">
                                 Get Tickets
                             </a>
@@ -30,11 +31,15 @@
     <div class="container mx-auto px-4 py-8 bg-gradient-to-b from-slate-900 to-slate-800 min-h-screen">
         <!-- Quick Category Links -->
         <div class="flex gap-4 mb-8 overflow-x-auto pb-8 category-scroll">
+            <button type="button" data-category=""
+                class="flex-shrink-0 px-6 py-2 rounded-full transition-all duration-300 shadow-lg hover:shadow-teal-500/20">
+                All
+            </button>
             @foreach ($categories as $category)
-                <a href="?category={{ $category->id }}"
-                    class="flex-shrink-0 px-6 py-2 rounded-full {{ request('category') == $category->id ? 'bg-gradient-to-r from-teal-500 to-emerald-500 text-white' : 'bg-slate-700 text-teal-300 hover:bg-slate-600' }} transition-all duration-300 shadow-lg hover:shadow-teal-500/20">
+                <button type="button" data-category="{{ $category->id }}"
+                    class="flex-shrink-0 px-6 py-2 rounded-full transition-all duration-300 shadow-lg hover:shadow-teal-500/20">
                     {{ $category->name }}
-                </a>
+                </button>
             @endforeach
         </div>
 
@@ -45,7 +50,8 @@
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="topEventsGrid">
                 @foreach ($events as $key => $event)
-                    <div class="event-card {{ $key >= 6 ? 'hidden' : '' }} bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-teal-500/20 transition-all duration-300 overflow-hidden border border-slate-700/50 group">
+                    <div
+                        class="event-card {{ $key >= 6 ? 'hidden' : '' }} bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-teal-500/20 transition-all duration-300 overflow-hidden border border-slate-700/50 group">
                         <div class="relative overflow-hidden">
                             <img src="{{ asset('storage/' . $event->image) }}"
                                 class="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-500"
@@ -69,7 +75,7 @@
                                     <span class="text-gray-400 text-sm flex items-center">
                                         <svg class="w-4 h-4 mr-1 text-rose-500" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd"
-                                                d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                                d="M3.172 5.172a4 4 0 015.656 0L10 6.343l-1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
                                                 clip-rule="evenodd" />
                                         </svg>
                                         {{ $event->favorites->count() }}
@@ -86,7 +92,8 @@
             </div>
             @if ($events->count() > 6)
                 <div class="text-center mt-6">
-                    <button id="showMoreEvents" class="inline-block bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-6 py-3 rounded-lg hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-teal-500/50">
+                    <button id="showMoreEvents"
+                        class="inline-block bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-6 py-3 rounded-lg hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-teal-500/50">
                         Show More
                     </button>
                 </div>
@@ -127,7 +134,7 @@
                                                     <svg class="w-4 h-4 mr-1 text-rose-500" fill="currentColor"
                                                         viewBox="0 0 20 20">
                                                         <path fill-rule="evenodd"
-                                                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l-1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
                                                             clip-rule="evenodd" />
                                                     </svg>
                                                     <span>{{ $event->favorites->count() ?? 0 }}</span>
@@ -146,21 +153,37 @@
             </div>
         </section>
 
+        <!-- Search Bar -->
+        <div class="mb-6">
+            <form id="searchForm" class="flex gap-4">
+                <input type="text"
+                       name="search"
+                       id="searchInput"
+                       placeholder="Search events..."
+                       value="{{ request('search') }}"
+                       class="flex-1 px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700/50 text-white
+                              placeholder-gray-400 focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+                <button type="submit"
+                        class="px-6 py-3 rounded-lg bg-gradient-to-r from-teal-500 to-emerald-500 text-white
+                               hover:from-teal-600 hover:to-emerald-600 transition-all duration-300">
+                    Search
+                </button>
+            </form>
+        </div>
+
         <!-- Enhanced Filters Section -->
         <div class="bg-slate-800/50 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-slate-700/50 mb-8 mt-12">
             <h2 class="text-xl font-semibold mb-4 text-teal-400">Find Events</h2>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <select
-                    class="bg-slate-700 border-slate-600 text-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                    id="category-filter">
+                <select class="filter-select bg-slate-700 border-slate-600 text-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        id="category-filter">
                     <option value="">All Categories</option>
                     @foreach ($categories as $category)
                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach
                 </select>
-                <select
-                    class="bg-slate-700 border-slate-600 text-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                    id="location-filter">
+                <select class="filter-select bg-slate-700 border-slate-600 text-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        id="location-filter">
                     <option value="">All Locations</option>
                     @foreach ($events as $event)
                         <option value="{{ $event->location }}">{{ $event->location }}</option>
@@ -169,9 +192,8 @@
                 <input type="date"
                     class="bg-slate-700 border-slate-600 text-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
                     id="date-filter">
-                <select
-                    class="bg-slate-700 border-slate-600 text-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                    id="sort-by">
+                <select class="filter-select bg-slate-700 border-slate-600 text-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        id="sort-by">
                     <option value="date-asc">Date (Ascending)</option>
                     <option value="date-desc">Date (Descending)</option>
                     <option value="name-asc">Name (A-Z)</option>
@@ -181,7 +203,7 @@
         </div>
 
         <!-- Main Events Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="main-events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($events as $event)
                 <div
                     class="bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-lg border border-slate-700/50 overflow-hidden group hover:shadow-teal-500/20 transition-all duration-300 transform hover:-translate-y-1 h-[400px] flex flex-col">
@@ -242,7 +264,7 @@
                                 <div class="flex items-center">
                                     <svg class="w-4 h-4 mr-1 text-rose-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd"
-                                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l-1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
                                             clip-rule="evenodd" />
                                     </svg>
                                     <span class="text-xs">{{ $event->favorites->count() ?? 0 }}</span>
@@ -294,3 +316,4 @@
 @push('scripts')
     <script src="{{ asset('js/event/index.js') }}"></script>
 @endpush
+

@@ -217,7 +217,7 @@
                                                         <div class="mt-1 relative rounded-lg">
                                                             <div
                                                                 class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                                <span class=" text-gray-300  sm:text-sm">$</span>
+                                                                <span class=" text-gray-300  sm:text-sm">Rp</span>
                                                             </div>
                                                             <input type="number" name="ticket_prices[]" required
                                                                 class="pl-7 block w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700/50 text-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent">

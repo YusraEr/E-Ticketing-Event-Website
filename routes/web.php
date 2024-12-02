@@ -27,8 +27,9 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/event', [EventController::class, 'index'])->name('event.index');
 Route::get('/event/{event}', [EventController::class, 'show'])->name('event.show');
-Route::get('/event/{event}/queue', [EventController::class, 'showQueue'])->name('event.queue'); // Add this line
+Route::get('/api/events/filter', [EventController::class, 'filterEvents'])->name('events.filter');
 Route::middleware('auth')->group(function () {
+    Route::get('/event/{event}/queue', [EventController::class, 'showQueue'])->name('event.queue');
     Route::get('/event/{event}/edit', [EventController::class, 'edit'])->name('event.edit');
     Route::put('/event/{event}', [EventController::class, 'update'])->name('event.update');
     Route::get('/event-create', [EventController::class, 'create'])->name('event.create');
@@ -41,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/booking-create', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
     Route::get('/booking/{booking}', [BookingController::class, 'show'])->name('booking.show');
+    Route::delete('/booking/{booking}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');
     Route::put('/queue/{booking}/approve', [EventController::class, 'approveQueue'])->name('queue.approve');
     Route::put('/queue/{booking}/reject', [EventController::class, 'rejectQueue'])->name('queue.reject');
     Route::put('/queue/{id}/approve', [EventController::class, 'approveQueue'])->name('queue.approve');
@@ -53,6 +55,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
 Route::get('main', function () {
     return view('dashboard');
 })->name('main')->middleware('auth');

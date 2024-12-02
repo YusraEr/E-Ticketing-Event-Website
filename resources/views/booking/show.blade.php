@@ -117,14 +117,28 @@
             </div>
 
             <!-- Back Button -->
-            <div class="mt-8 text-center">
+            <div class="mt-8 text-center flex items-center justify-center space-x-4">
                 <a href="{{ route('dashboard') }}" class="inline-flex items-center px-6 py-3 rounded-lg bg-slate-800 text-white hover:bg-slate-700 transition-colors duration-300">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
                     Go To dashboard
                 </a>
+
+                @if($booking->created_at->diffInHours(now()) <= 24)
+                    <form action="{{ route('booking.cancel', $booking->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking? This action cannot be undone.');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="inline-flex items-center px-6 py-3 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors duration-300">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Cancel Booking
+                        </button>
+                    </form>
+                @endif
             </div>
+
         </div>
     </div>
 </div>

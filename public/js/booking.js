@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const PROCESSING_FEE_RATE = 0.05; // 5% processing fee
-
     function updateTotals() {
         let subtotal = 0;
         const selectedTickets = {};
@@ -19,14 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     total: ticket.price * quantity
                 };
             }
-        });
-
-        const processingFee = subtotal * PROCESSING_FEE_RATE;
-        const total = subtotal + processingFee;
+        });;
+        const total = subtotal;
 
         // Update summary display
-        document.getElementById('subtotal').textContent = `Rp. ${subtotal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-        document.getElementById('fee').textContent = `Rp. ${processingFee.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
         document.getElementById('total-amount').textContent = `Rp. ${total.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
         // Update selected tickets summary

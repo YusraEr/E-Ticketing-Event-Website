@@ -54,12 +54,12 @@
 
                         <div class="flex justify-between items-center mt-auto">
                             <form action="{{ route('favorite.destroy', $favorite->event->id) }}"
-                                  method="POST"
-                                  class="delete-favorite-form">
+                                  method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                        class="text-red-500 hover:text-red-300 transform hover:scale-110 transition-all duration-200">
+                                        class="text-red-500 hover:text-red-300 transform hover:scale-110 transition-all duration-200"
+                                        onclick="return confirm('Remove from favorites?')">
                                     <i class="fas fa-heart text-xl"></i>
                                 </button>
                             </form>
@@ -86,7 +86,7 @@
                 <h3 class="text-xl font-semibold text-white mb-2">No Favorite Events</h3>
                 <p class="text-gray-400 text-center mb-4">Start adding events to your favorites to see them here!</p>
                 <a href="{{ route('event.index') }}"
-                    class="px-6 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition">
+                    class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-lg hover:from-teal-500 hover:to-emerald-500 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-teal-500/30">
                     Discover Events
                 </a>
             </div>
@@ -94,36 +94,14 @@
     </div>
 </div>
 
-<script>
-document.querySelectorAll('.delete-favorite-form').forEach(form => {
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
+@if(session('success'))
+    <script>
+        toastr.success('{{ session('success') }}');
+    </script>
+@endif
 
-        if(confirm('Remove from favorites?')) {
-            fetch(this.action, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
-                    this.closest('.favorite-card').remove();
-                    toastr.success(data.message);
-
-                    if(!document.querySelector('.favorite-card')) {
-                        window.location.reload();
-                    }
-                } else {
-                    throw new Error(data.message);
-                }
-            })
-            .catch(error => {
-                toastr.error(error.message || 'Failed to remove from favorites');
-            });
-        }
-    });
-});
-</script>
+@if(session('error'))
+    <script>
+        toastr.error('{{ session('error') }}');
+    </script>
+@endif

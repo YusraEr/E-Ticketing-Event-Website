@@ -39,7 +39,7 @@
     <!-- Enhanced Search Section -->
     <div class="relative -mt-24 z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-slate-800/40 backdrop-blur-xl rounded-2xl shadow-lg search-container p-8 transition-all duration-300">
-            <form action="" method="GET" class="flex flex-col md:flex-row gap-4">
+            <form action="{{ route('home') }}" method="GET" class="flex flex-col md:flex-row gap-4">
                 <div class="flex-1">
                     <label for="search" class="block text-sm font-medium text-gray-300 mb-2">Search Events</label>
                     <div class="relative">
@@ -61,9 +61,11 @@
                         class="w-full p-4 rounded-xl bg-slate-900/50 border border-slate-700/50 text-white
                         focus:ring-teal-500 focus:border-teal-500 transition-all duration-300">
                         <option value="">All Categories</option>
-                        <option value="music">Music</option>
-                        <option value="sports">Sports</option>
-                        <option value="arts">Arts</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->slug }}" {{ request('category') == $category->slug ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="flex items-end">
@@ -338,4 +340,3 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="{{ asset('js/home.js') }}"></script>
 @endpush
-
