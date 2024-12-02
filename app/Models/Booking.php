@@ -10,6 +10,9 @@ class Booking extends Model
         'user_id',
         'total_amount',
         'total_tickets',
+        'status',
+        'approved_at',
+        'rejected_at'
     ];
 
     public function event()
@@ -26,4 +29,6 @@ class Booking extends Model
     {
         return $this->hasMany(Ticket::class);
     }
+
+    // Remove incorrect ticketType relation since we access it through tickets
 }

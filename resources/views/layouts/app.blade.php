@@ -60,11 +60,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="https://unpkg.com/vanilla-tilt@1.7.0/dist/vanilla-tilt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Custom Global Scripts -->
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/event.js') }}"></script>
     <script src="{{ asset('js/dashboard/user.js') }}"></script>
+
 
     <!-- Page Specific Scripts -->
     @stack('scripts')

@@ -15,7 +15,7 @@
                                 class="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">
                                 {{ $featured->name }}</h2>
                             <p class="text-xl mb-4 text-gray-200">{{ $featured->description }}</p>
-                            <a href="{{ route('event.show', $featured->id) }}"
+                            <a href="{{ route('event.queue', $featured->id) }}"
                                 class="inline-block bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-6 py-3 rounded-lg hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-teal-500/50">
                                 Get Tickets
                             </a>

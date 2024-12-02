@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Booking;
 use App\Models\Category;
 use App\Models\TicketType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class EventController extends Controller
 {
@@ -229,16 +232,53 @@ class EventController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $event = Event::findOrFail($id);
+
+            // Check if user is authorized to delete this event
+            if ($event->user_id !== Auth::id()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You are not authorized to delete this event.'
+                ], 403);
+            }
+
+            // Delete event image
+            if ($event->image) {
+                Storage::disk('public')->delete($event->image);
+            }
+
+            // Delete the event (this will cascade delete related ticket types)
+            $event->delete();
+
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Event deleted successfully!'
+                ]);
+            }
+
+            return redirect()->route('dashboard')
+                ->with('success', 'Event deleted successfully!');
+
+        } catch (\Exception $e) {
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to delete event: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->back()
+                ->with('error', 'Failed to delete event: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Update available tickets after booking
-     */
     public function updateAvailableTickets($ticketTypeId, $quantity)
     {
         try {
             $ticketType = TicketType::findOrFail($ticketTypeId);
+
 
             if ($ticketType->available_tickets < $quantity) {
                 throw new \Exception('Not enough tickets available');
@@ -249,8 +289,137 @@ class EventController extends Controller
 
             return true;
         } catch (\Exception $e) {
+
             throw new \Exception('Failed to update ticket availability: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Display ticket queues for a specific event
+     */
+    public function showQueue(string $id)
+    {
+        $event = Event::with(['ticketTypes', 'bookings.tickets.ticketType'])
+            ->findOrFail($id);
+
+        $ticketQueues = $event->bookings()
+            ->with(['user', 'event', 'tickets.ticketType'])
+            ->get()
+            ->groupBy('status');
+
+        $queuesByStatus = [
+            'pending' => $ticketQueues->get('pending', collect()),
+            'ready' => $ticketQueues->get('ready', collect()),
+            'rejected' => $ticketQueues->get('rejected', collect()),
+        ];
+
+        return view('event.queue', compact('event', 'queuesByStatus'));
+    }
+
+    /**
+     * Approve a ticket queue request
+     */
+    public function approveQueue(string $id)
+    {
+        try {
+            Log::info('Approving queue: ' . $id);
+            $booking = Booking::with(['event'])->findOrFail($id);
+
+            if ($booking->status !== 'pending') {
+                Log::warning('Attempt to approve non-pending booking: ' . $id);
+                return redirect()->back()->with('error', 'This booking has already been processed.');
+            }
+
+            // Use model transaction
+            $booking->getConnection()->transaction(function() use ($booking) {
+                // Update booking status
+                $booking->update([
+                    'status' => 'ready',
+                    'approved_at' => now()
+                ]);
+            });
+
+            Log::info('Successfully approved booking: ' . $id);
+            return redirect()->back()->with('success', 'Ticket request approved successfully!');
+        } catch (\Exception $e) {
+            Log::error('Approval error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to approve ticket: ' . $e->getMessage());
+        }
+    }
+
+    public function rejectQueue(string $id)
+    {
+        try {
+            Log::info('Rejecting queue: ' . $id);
+            $booking = Booking::with(['event', 'tickets.ticketType'])->findOrFail($id);
+
+            if ($booking->status !== 'pending') {
+                Log::warning('Attempt to reject non-pending booking: ' . $id);
+                return redirect()->back()->with('error', 'This booking has already been processed.');
+            }
+
+            // Use model transaction
+            $booking->getConnection()->transaction(function() use ($booking) {
+                // Update booking status
+                $booking->update([
+                    'status' => 'rejected',
+                    'rejected_at' => now()
+                ]);
+
+                // Return tickets to available pool by grouping tickets by ticket type
+                $ticketsByType = $booking->tickets->groupBy('ticket_type_id');
+                foreach ($ticketsByType as $ticketTypeId => $tickets) {
+                    $ticketType = $tickets->first()->ticketType;
+                    $quantityToReturn = $tickets->count();
+
+                    $ticketType->increment('available_tickets', $quantityToReturn);
+                    Log::info("Returned {$quantityToReturn} tickets to pool for ticket type: {$ticketTypeId}");
+                }
+            });
+
+            Log::info('Successfully rejected booking: ' . $id);
+            return redirect()->back()->with('success', 'Ticket request rejected successfully!');
+        } catch (\Exception $e) {
+            Log::error('Rejection error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to reject ticket: ' . $e->getMessage());
+        }
+    }
+
+    public function approveAllQueue(string $eventId)
+    {
+        try {
+            Log::info('Approving all pending queues for event: ' . $eventId);
+
+            $event = Event::findOrFail($eventId);
+            $pendingBookings = $event->bookings()->where('status', 'pending')->get();
+
+            if ($pendingBookings->isEmpty()) {
+
+                return redirect()->back()->with('info', 'No pending tickets to approve.');
+            }
+
+            DB::transaction(function() use ($pendingBookings) {
+                foreach ($pendingBookings as $booking) {
+                    $booking->update([
+                        'status' => 'ready',
+                        'approved_at' => now()
+                    ]);
+                }
+            });
+
+            Log::info('Successfully approved all pending bookings for event: ' . $eventId);
+            return redirect()->back()->with('success', 'All pending tickets have been approved!');
+        } catch (\Exception $e) {
+            Log::error('Bulk approval error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to approve tickets: ' . $e->getMessage());
+        }
+    }
 }
+
+
+
+
+
+
+
 

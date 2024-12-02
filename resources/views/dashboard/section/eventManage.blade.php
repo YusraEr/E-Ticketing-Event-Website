@@ -1,4 +1,15 @@
-<div x-show="activeTab === 'events'"
+<div x-show="activeTab === 'events'" x-init="() => {
+        // Restore active tab from session storage
+        let savedTab = sessionStorage.getItem('activeTab');
+        if (savedTab) {
+            activeTab = savedTab;
+        }
+
+        // Watch for tab changes and save to session storage
+        $watch('activeTab', (value) => {
+            sessionStorage.setItem('activeTab', value);
+        });
+    }"
      x-transition:enter="transition-all ease-out duration-300"
      x-transition:enter-start="opacity-0 -translate-y-4"
      x-transition:enter-end="opacity-100 translate-y-0"
@@ -29,16 +40,19 @@
                                 class="text-xs px-2 py-1 bg-teal-500/20 text-teal-400 rounded hover:bg-teal-500/30 transition-colors">
                                 Edit
                             </a>
-                            <button @click="deleteEvent({{ $event->id }})"
-                                class="text-xs px-2 py-1 bg-red-500/20 text-red-400 rounded hover:bg-red-500/30 transition-colors">
-                                Delete
-                            </button>
+                            <form action="{{ route('event.destroy', $event->id) }}" method="POST" class="inline delete-event-form">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="text-xs px-2 py-1 bg-red-500/20 text-red-400 rounded hover:bg-red-500/30 transition-colors">
+                                    Delete
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
             @endforeach
         </div>
-
     </div>
 </div>

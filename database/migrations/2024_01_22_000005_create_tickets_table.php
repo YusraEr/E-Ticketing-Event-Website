@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('ticket_code');
             $table->foreignId('ticket_type')->constrained('ticket_types')->onDelete('cascade');
             $table->decimal('price', 10, 2);
-            $table->boolean('is_used')->default(false);
+            $table->enum('status', ['pending', 'completed', 'cancelled', 'ready'])->default('pending');
             $table->timestamps();
         });
     }

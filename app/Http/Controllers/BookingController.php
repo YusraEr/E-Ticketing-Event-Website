@@ -67,7 +67,6 @@ class BookingController extends Controller
         try {
             $user = Auth::user();
             $totalAmount = 0;
-            $processingFee = 0;
             $tickets = TicketType::whereIn('id', array_keys($request->quantities))->get();
 
             // Validate ticket availability first
@@ -89,9 +88,7 @@ class BookingController extends Controller
                 'user_id' => $user->id,
                 'event_id' => $request->event_id,
                 'total_amount' => $finalAmount,
-                'processing_fee' => $processingFee,
-                'status' => 'confirmed',
-                'booking_number' => 'BOK-' . strtoupper(Str::random(8)),
+                'status' => 'pending',
                 'total_tickets' => array_sum($request->quantities),
             ]);
 
@@ -106,7 +103,7 @@ class BookingController extends Controller
                         $this->ticketController->store([
                             'user_id' => $user->id,
                             'event_id' => $request->event_id,
-                            'ticket_type_id' => $ticketTypeId,
+                            'ticket_type' => $ticketTypeId,
                             'booking_id' => $booking->id,
                             'price' => $ticketType->price,
                         ]);

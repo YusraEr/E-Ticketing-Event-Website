@@ -10,10 +10,9 @@ class Ticket extends Model
         'booking_id',
         'ticket_type',
         'user_id',
-        'is_used',
+        'status',
         'ticket_code',
     ];
-
 
     public function user()
     {

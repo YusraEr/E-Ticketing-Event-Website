@@ -81,12 +81,8 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if ($user->avatar) {
-            Storage::delete('public/' . $user->avatar);
-        }
-        
         $user->delete();
-        
+
         return response()->json([
             'success' => true,
             'message' => 'User deleted successfully!'

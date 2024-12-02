@@ -169,27 +169,29 @@ class AllTableSeeder extends Seeder
 
                 foreach ($randomUsers as $user) {
                     $ticketQuantity = rand(1, 4);
-                    $ticketPrice = $ticketTypes[array_rand($ticketTypes)]['price'];
+                    $randomTicketType = TicketType::where('event_id', $event->id)
+                        ->inRandomOrder()
+                        ->first();
+                    $ticketPrice = $randomTicketType->price;
                     $totalAmount = $ticketPrice * $ticketQuantity;
-                    $processingFee = $totalAmount * 0.05;
 
                     $booking = Booking::create([
                         'user_id' => $user->id,
                         'event_id' => $event->id,
-                        'total_amount' => $totalAmount + $processingFee,
-                        'total_tickets' => $ticketQuantity
+                        'total_amount' => $totalAmount,
+                        'total_tickets' => $ticketQuantity,
+                        'status' => 'pending'
                     ]);
 
                     // Create tickets
                     for ($i = 0; $i < $ticketQuantity; $i++) {
                         Ticket::create([
                             'user_id' => $user->id,
-                            'ticket_type' => rand(1, 3),
-
+                            'ticket_type' => $randomTicketType->id,
                             'booking_id' => $booking->id,
                             'ticket_code' => 'TIC-' . strtoupper(Str::random(8)),
                             'price' => $ticketPrice,
-                            'is_used' => false
+                            'status' => 'pending'
                         ]);
                     }
                 }

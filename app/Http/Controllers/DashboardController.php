@@ -13,6 +13,8 @@ class DashboardController extends Controller
 {
     public function index($section = 'bookings')
     {
+        $activeTab = session('activeTab', 'events'); // default to 'events' if not set
+
         // user
         $bookings = Booking::with('event')->where('user_id', Auth::id())->get();
         $favorites = Favorite::with('event')->where('user_id', Auth::id())->get();
@@ -23,15 +25,21 @@ class DashboardController extends Controller
         $bookings = Booking::all();
         $myEvents = Event::with(['bookings', 'favorites'])->where('user_id', Auth::id())->get();
 
-
         if (Auth::check()) {
             if (Auth::user()->role == 'admin') {
                 return view('dashboard.admin', compact('users', 'events', 'bookings','myEvents'));
             } else if (Auth::user()->role == 'organizer') {
-                return view('dashboard.organizer');
+                return view('dashboard.organizer', compact('events', 'bookings','myEvents'));
             }
-            return view("dashboard.user", compact('bookings', 'favorites', 'section'));
+            return view("dashboard.user", compact('bookings', 'favorites', 'section', 'activeTab'));
         }
         return redirect()->route('login');
+    }
+
+    public function saveTabState(Request $request)
+
+    {
+        $request->session()->put('activeTab', $request->tab);
+        return response()->json(['success' => true]);
     }
 }
