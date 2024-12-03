@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TicketType;
 use App\Models\Booking;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\TicketType;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TicketController;
 
 class BookingController extends Controller
@@ -175,24 +176,36 @@ class BookingController extends Controller
         }
 
         try {
+            DB::beginTransaction();
+
+            // Get tickets before deleting them
+            $tickets = $booking->tickets()->with('ticketType')->get();
+
+            // Update ticket type available quantities
+            foreach ($tickets->groupBy('ticket_type') as $ticketTypeId => $groupedTickets) {
+                $ticketType = TicketType::find($ticketTypeId);
+                $ticketType->available_tickets += $groupedTickets->count();
+                $ticketType->save();
+            }
+
+            // Reset booking details
             $booking->status = 'cancelled';
+            $booking->total_tickets = 0;
+            $booking->total_amount = 0;
 
-            $totalTickets = $booking->total_tickets;
-
+            // Delete associated tickets
             $booking->tickets()->delete();
-
-            $event = $booking->event;
-            $event->available_tickets += $totalTickets;
-
             $booking->save();
-            $event->save();
 
+            DB::commit();
             return redirect()->route('dashboard')
                 ->with('success', 'Booking cancelled successfully.');
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to cancel booking. Please try again.');
+            DB::rollBack();
+            return back()->with('error', 'Failed to cancel booking: ' . $e->getMessage());
         }
     }
 }
+
 

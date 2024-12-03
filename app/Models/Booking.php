@@ -30,5 +30,4 @@ class Booking extends Model
         return $this->hasMany(Ticket::class);
     }
 
-    // Remove incorrect ticketType relation since we access it through tickets
 }

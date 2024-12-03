@@ -30,7 +30,7 @@
                     </h1>
                     <p class="mt-2 text-gray-400">Manage ticket requests for {{ $event->name }}</p>
                 </div>
-                
+
                 @if($queuesByStatus['pending']->isNotEmpty())
                 <form action="{{ route('queue.approve.all', $event->id) }}" method="POST" class="inline-block">
                     @csrf
@@ -44,15 +44,25 @@
                 </form>
                 @endif
             </div>
-            
+
             <!-- Available Tickets Info -->
-            <div class="mt-4 flex gap-4">
+            <div class="mt-4 flex flex-wrap gap-4">
                 @foreach($event->ticketTypes as $type)
                 <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg px-4 py-2 border border-slate-700/50">
                     <span class="text-sm font-medium text-slate-400">{{ $type->name }}:</span>
-                    <span class="ml-2 text-teal-400 font-bold">{{ $type->available_tickets }} available</span>
+                    <div class="flex flex-col">
+                        <span class="text-teal-400 font-bold">{{ $type->available_tickets }} available</span>
+                    </div>
                 </div>
                 @endforeach
+
+                <!-- Total Tickets Sold -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg px-4 py-2 border border-slate-700/50">
+                    <span class="text-sm font-medium text-slate-400">Total Tickets Sold:</span>
+                    <div class="text-emerald-400 font-bold">
+                        {{ $event->bookings->sum('total_tickets')}}
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -129,7 +139,7 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        @foreach($queue->tickets->groupBy('ticket_type_id') as $typeId => $tickets)
+                                        @foreach($queue->tickets->groupBy('ticket_types') as $typeId => $tickets)
                                             <div class="font-medium text-white">
                                                 {{ $tickets->first()->ticketType->name }}
                                                 ({{ $tickets->count() }} tickets)
