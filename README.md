@@ -47,7 +47,7 @@ With additional features such as a ticketing system, real-time ticket availabili
     ```
 2. Navigate to the project directory
     ```sh
-    cd eventhub
+    cd E-Ticketing-Event-Website
     ```
 3. Install PHP dependencies
     ```sh
