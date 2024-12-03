@@ -63,7 +63,6 @@ class EventController extends Controller
         }
 
         try {
-
             $validated = $request->validate([
                 'name' => 'required|max:255',
                 'description' => 'required',
@@ -71,12 +70,12 @@ class EventController extends Controller
                 'location' => 'required',
                 'image' => 'required|image|max:10240',
                 'category_id' => 'required|exists:categories,id',
-                'ticket_categories' => 'required|array|min:1|max:3',
-                'ticket_categories.*' => 'required|string|max:255',
-                'ticket_prices' => 'required|array|min:1|max:3',
-                'ticket_prices.*' => 'required|numeric|min:0',
-                'ticket_quantities' => 'required|array|min:1|max:3',
-                'ticket_quantities.*' => 'required|integer|min:1'
+                'ticket_categories.0' => 'required|string|max:255', // At least one ticket type required
+                'ticket_prices.0' => 'required|numeric|min:0',
+                'ticket_quantities.0' => 'required|integer|min:1',
+                'ticket_categories.*' => 'nullable|string|max:255',
+                'ticket_prices.*' => 'nullable|numeric|min:0',
+                'ticket_quantities.*' => 'nullable|integer|min:1'
             ]);
 
             // Add more detailed error logging
@@ -111,14 +110,16 @@ class EventController extends Controller
                 'image' => $imagePath,
             ]);
 
-
             // Store ticket categories
-            for ($i = 0; $i < count($validated['ticket_categories']); $i++) {
-                $ticketType = $event->ticketTypes()->create([
-                    'name' => $validated['ticket_categories'][$i],
-                    'price' => $validated['ticket_prices'][$i],
-                    'available_tickets' => $validated['ticket_quantities'][$i]
-                ]);
+            $ticketCategories = array_filter($request->ticket_categories); // Remove empty values
+            foreach ($ticketCategories as $index => $category) {
+                if ($category && isset($request->ticket_prices[$index]) && isset($request->ticket_quantities[$index])) {
+                    $event->ticketTypes()->create([
+                        'name' => $category,
+                        'price' => $request->ticket_prices[$index],
+                        'available_tickets' => $request->ticket_quantities[$index]
+                    ]);
+                }
             }
 
             return redirect()->route('event.show', $event->id)
@@ -184,12 +185,12 @@ class EventController extends Controller
                 'location' => 'required',
                 'image' => 'nullable|image|max:10240',
                 'category_id' => 'required|exists:categories,id',
-                'ticket_categories' => 'required|array|min:1|max:3',
-                'ticket_categories.*' => 'required|string|max:255',
-                'ticket_prices' => 'required|array|min:1|max:3',
-                'ticket_prices.*' => 'required|numeric|min:0',
-                'ticket_quantities' => 'required|array|min:1|max:3',
-                'ticket_quantities.*' => 'required|integer|min:1'
+                'ticket_categories.0' => 'required|string|max:255', // At least one ticket type required
+                'ticket_prices.0' => 'required|numeric|min:0',
+                'ticket_quantities.0' => 'required|integer|min:1',
+                'ticket_categories.*' => 'nullable|string|max:255',
+                'ticket_prices.*' => 'nullable|numeric|min:0',
+                'ticket_quantities.*' => 'nullable|integer|min:1'
             ]);
 
             // Handle image update
@@ -235,12 +236,15 @@ class EventController extends Controller
             $event->ticketTypes()->delete(); // Remove old ticket types
 
             // Create new ticket types
-            for ($i = 0; $i < count($validated['ticket_categories']); $i++) {
-                $event->ticketTypes()->create([
-                    'name' => $validated['ticket_categories'][$i],
-                    'price' => $validated['ticket_prices'][$i],
-                    'available_tickets' => $validated['ticket_quantities'][$i]
-                ]);
+            $ticketCategories = array_filter($request->ticket_categories); // Remove empty values
+            foreach ($ticketCategories as $index => $category) {
+                if ($category && isset($request->ticket_prices[$index]) && isset($request->ticket_quantities[$index])) {
+                    $event->ticketTypes()->create([
+                        'name' => $category,
+                        'price' => $request->ticket_prices[$index],
+                        'available_tickets' => $request->ticket_quantities[$index]
+                    ]);
+                }
             }
 
             return redirect()->route('event.show', $event->id)
