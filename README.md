@@ -114,55 +114,35 @@ For any issues or support, please contact:
 ## Preview
 
 ### Landing Page
-<video width="600" controls>
-    <source src="preview/landing-page.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
+
 
 *Home page with featured events and search functionality*
 
 ### Event Discovery
-<video width="600" controls>
-    <source src="preview/event-discovery.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
+![Event Discovery](https://via.placeholder.com/800x400.png)
+
 
 *Browse and filter events with advanced search options*
 
 ### Event Details
-<video width="600" controls>
-    <source src="preview/event-details.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
+
 
 *Detailed event information and booking interface*
 
 ### User Dashboard
-<video width="600" controls>
-    <source src="preview/user-dashboard.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
+
 
 *Personal dashboard showing bookings and favorites*
 
 ### Admin Panel
-<video width="600" controls>
-    <source src="preview/admin-panel.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
 
-<video width="600" controls>
-    <source src="preview/admin-panel-2.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
+
+
 
 *Administrative interface for managing events and users*
 
 ### Booking Process
-<video width="600" controls>
-    <source src="preview/booking.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
+
 
 *Streamlined ticket booking and payment flow*
 
