@@ -48,7 +48,12 @@ class BookingController extends Controller
      */
     public function create()
     {
-        //
+        if (!Auth::check()){
+            return redirect()->route('login')->with('warning', 'Please login to make a booking.');
+        }
+        if (Auth::user()->role == "user"){
+            return abort(403);
+        }
     }
 
     /**

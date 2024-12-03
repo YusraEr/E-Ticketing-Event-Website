@@ -49,6 +49,11 @@ class EventController extends Controller
         if (!Auth::check()) {
             return redirect()->route('login')->with('warning', 'Please login to create an event.');
         }
+
+        if (Auth::user()->role == 'user'){
+            return abort(403);
+        }
+
         $categories = Category::all();
         return view('event.create', compact('categories'));
     }
@@ -171,47 +176,40 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($id);
 
-        // Check if user is authorized to update this event
         if ($event->user_id !== Auth::id()) {
             return redirect()->route('event.index')
                 ->with('error', 'You are not authorized to update this event.');
         }
 
         try {
-            $validated = $request->validate([
+            // Base validation for event details
+            $validatedData = $request->validate([
                 'name' => 'required|max:255',
                 'description' => 'required',
                 'event_date' => 'required|date',
                 'location' => 'required',
                 'image' => 'nullable|image|max:10240',
                 'category_id' => 'required|exists:categories,id',
-                'ticket_categories.0' => 'required|string|max:255', // At least one ticket type required
-                'ticket_prices.0' => 'required|numeric|min:0',
-                'ticket_quantities.0' => 'required|integer|min:1',
-                'ticket_categories.*' => 'nullable|string|max:255',
-                'ticket_prices.*' => 'nullable|numeric|min:0',
-                'ticket_quantities.*' => 'nullable|integer|min:1'
             ]);
 
             // Handle image update
-
             $imagePath = $event->image; // Keep existing image by default
             if ($request->hasFile('image')) {
-                // Delete old image
-                if ($event->image) {
+                // Delete old image if exists
+                if ($event->image && Storage::disk('public')->exists($event->image)) {
                     Storage::disk('public')->delete($event->image);
                 }
 
                 $image = $request->file('image');
                 $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
                 $imagePath = $image->storeAs('uploads/events', $imageName, 'public');
-            } elseif ($request->has('cropped_image')) {
+            } elseif ($request->has('cropped_image') && $request->cropped_image != '') {
                 // Handle base64 cropped image
-                if ($event->image) {
+                if ($event->image && Storage::disk('public')->exists($event->image)) {
                     Storage::disk('public')->delete($event->image);
                 }
 
-                $image_64 = $request->input('cropped_image');
+                $image_64 = $request->cropped_image;
                 $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
                 $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
                 $image = str_replace($replace, '', $image_64);
@@ -222,28 +220,40 @@ class EventController extends Controller
                 Storage::disk('public')->put($imagePath, base64_decode($image));
             }
 
-            // Update event
+            // Update event basic details
             $event->update([
-                'name' => $validated['name'],
-                'description' => $validated['description'],
-                'event_date' => $validated['event_date'],
-                'location' => $validated['location'],
-                'category_id' => $validated['category_id'],
+                'name' => $validatedData['name'],
+                'description' => $validatedData['description'],
+                'event_date' => $validatedData['event_date'],
+                'location' => $validatedData['location'],
+                'category_id' => $validatedData['category_id'],
                 'image' => $imagePath,
             ]);
 
-            // Update ticket types
-            $event->ticketTypes()->delete(); // Remove old ticket types
+            // Only update ticket types if they are present in the request
+            if ($request->has('ticket_categories')) {
+                // Validate ticket data
+                $request->validate([
+                    'ticket_categories.0' => 'required|string|max:255',
+                    'ticket_prices.0' => 'required|numeric|min:0',
+                    'ticket_quantities.0' => 'required|integer|min:1',
+                    'ticket_categories.*' => 'nullable|string|max:255',
+                    'ticket_prices.*' => 'nullable|numeric|min:0',
+                    'ticket_quantities.*' => 'nullable|integer|min:1'
+                ]);
 
-            // Create new ticket types
-            $ticketCategories = array_filter($request->ticket_categories); // Remove empty values
-            foreach ($ticketCategories as $index => $category) {
-                if ($category && isset($request->ticket_prices[$index]) && isset($request->ticket_quantities[$index])) {
-                    $event->ticketTypes()->create([
-                        'name' => $category,
-                        'price' => $request->ticket_prices[$index],
-                        'available_tickets' => $request->ticket_quantities[$index]
-                    ]);
+                // Update ticket types
+                $event->ticketTypes()->delete();
+
+                $ticketCategories = array_filter($request->ticket_categories);
+                foreach ($ticketCategories as $index => $category) {
+                    if ($category && isset($request->ticket_prices[$index]) && isset($request->ticket_quantities[$index])) {
+                        $event->ticketTypes()->create([
+                            'name' => $category,
+                            'price' => $request->ticket_prices[$index],
+                            'available_tickets' => $request->ticket_quantities[$index]
+                        ]);
+                    }
                 }
             }
 
