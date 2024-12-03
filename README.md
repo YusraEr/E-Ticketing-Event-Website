@@ -43,7 +43,7 @@ With additional features such as a ticketing system, real-time ticket availabili
 ## Installation
 1. Clone the repository
     ```sh
-    git clone https://github.com/yourusername/eventhub.git
+    git clone https://github.com/YusraEr/E-Ticketing-Event-Website.git
     ```
 2. Navigate to the project directory
     ```sh
