@@ -34,40 +34,51 @@ Route::middleware('auth')->group(function () {
 
     // User management routes
     Route::controller(UserController::class)->group(function () {
-        Route::get('/user/create', 'create')->name('user.create');
-        Route::post('/user', 'store')->name('user.store');
-        Route::get('/user/{user}/edit', 'edit')->name('user.edit');
-        Route::put('/user/{user}', 'update')->name('user.update');
-        Route::delete('/user/{user}', 'destroy')->name('user.destroy');
+        Route::middleware('is_admin')->group(function () {
+            Route::get('/user/create', 'create')->name('user.create');
+            Route::post('/user', 'store')->name('user.store');
+            Route::get('/user/{user}/edit', 'edit')->name('user.edit');
+            Route::put('/user/{user}', 'update')->name('user.update');
+            Route::delete('/user/{user}', 'destroy')->name('user.destroy');
+        });
     });
 
     // Event management routes
     Route::controller(EventController::class)->group(function () {
-        Route::get('/event-create', 'create')->name('event.create');
-        Route::post('/event', 'store')->name('event.store');
-        Route::get('/event/{event}/edit', 'edit')->name('event.edit');
-        Route::put('/event/{event}', 'update')->name('event.update');
-        Route::delete('/event/{event}', 'destroy')->name('event.destroy');
-        Route::get('/event/{event}/queue', 'showQueue')->name('event.queue');
-        Route::put('/queue/{booking}/approve', 'approveQueue')->name('queue.approve');
-        Route::put('/queue/{booking}/reject', 'rejectQueue')->name('queue.reject');
-        Route::put('/queue/{event}/approve-all', 'approveAllQueue')->name('queue.approve.all');
+        Route::middleware('is_not_auth')->group(function () {
+            Route::post('/event', 'store')->name('event.store');
+            Route::get('/event-create', 'create')->name('event.create');
+            Route::delete('/event/{event}', 'destroy')->name('event.destroy');
+            Route::put('/event/{event}', 'update')->name('event.update');
+            Route::get('/event/{event}/edit', 'edit')->name('event.edit');
+            Route::get('/event/{event}/queue', 'showQueue')->name('event.queue');
+            Route::put('/queue/{booking}/approve', 'approveQueue')->name('queue.approve');
+            Route::put('/queue/{booking}/reject', 'rejectQueue')->name('queue.reject');
+            Route::put('/queue/{booking}/approve-all', 'approveAllQueue')->name('queue.approve.all');
+        });
     });
 
-    // Booking routes
-    Route::controller(BookingController::class)->group(function () {
-        Route::get('/booking', 'index')->name('booking.index');
-        Route::get('/booking-create', 'create')->name('booking.create');
-        Route::post('/booking', 'store')->name('booking.store');
-        Route::get('/booking/{booking}', 'show')->name('booking.show');
-        Route::delete('/booking/{booking}/cancel', 'cancel')->name('booking.cancel');
-    });
 
-    // Favorite routes
-    Route::controller(FavoriteController::class)->group(function () {
-        Route::post('/favorite', 'store')->name('favorite.store');
-        Route::delete('/favorite/{id}', 'destroy')->name('favorite.destroy');
+
+
+    Route::middleware('is_user')->group(function () {
+        
+        // Booking routes
+        Route::controller(BookingController::class)->group(function () {
+            Route::get('/booking', 'index')->name('booking.index');
+            Route::get('/booking-create', 'create')->name('booking.create');
+            Route::post('/booking', 'store')->name('booking.store');
+            Route::get('/booking/{booking}', 'show')->name('booking.show');
+            Route::delete('/booking/{booking}/cancel', 'cancel')->name('booking.cancel');
+        });
+
+        // Favorite routes
+        Route::controller(FavoriteController::class)->group(function () {
+            Route::post('/favorite', 'store')->name('favorite.store');
+            Route::delete('/favorite/{id}', 'destroy')->name('favorite.destroy');
+        });
     });
 });
+
 
 require __DIR__ . '/auth.php';
