@@ -46,7 +46,7 @@
             </div>
 
             <!-- Available Tickets Info -->
-            <div class="mt-4 flex flex-wrap gap-4">
+            <div class="mt-4 flex flex-wrap gap-4">us
                 @foreach($event->ticketTypes as $type)
                 <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg px-4 py-2 border border-slate-700/50">
                     <span class="text-sm font-medium text-slate-400">{{ $type->name }}:</span>

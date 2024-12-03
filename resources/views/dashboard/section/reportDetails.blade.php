@@ -22,7 +22,7 @@
                 @foreach($events as $event)
                 <div class="flex items-center justify-between">
                     <span class="text-slate-300">{{ $event->name }}</span>
-                    <span class="text-slate-400">{{ $event->bookings->count() }} attendees</span>
+                    <span class="text-slate-400">{{ $event->bookings->sum('total_tickets') }} attendees</span>
                 </div>
                 @endforeach
             </div>

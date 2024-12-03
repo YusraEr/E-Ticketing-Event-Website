@@ -75,7 +75,7 @@ class EventController extends Controller
                 'location' => 'required',
                 'image' => 'required|image|max:10240',
                 'category_id' => 'required|exists:categories,id',
-                'ticket_categories.0' => 'required|string|max:255', // At least one ticket type required
+                'ticket_categories.0' => 'required|string|max:255', 
                 'ticket_prices.0' => 'required|numeric|min:0',
                 'ticket_quantities.0' => 'required|integer|min:1',
                 'ticket_categories.*' => 'nullable|string|max:255',
@@ -116,7 +116,7 @@ class EventController extends Controller
             ]);
 
             // Store ticket categories
-            $ticketCategories = array_filter($request->ticket_categories); // Remove empty values
+            $ticketCategories = array_filter($request->ticket_categories);
             foreach ($ticketCategories as $index => $category) {
                 if ($category && isset($request->ticket_prices[$index]) && isset($request->ticket_quantities[$index])) {
                     $event->ticketTypes()->create([
