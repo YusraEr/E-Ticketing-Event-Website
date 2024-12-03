@@ -86,23 +86,6 @@ With additional features such as a ticketing system, real-time ticket availabili
 For any issues or support, please contact:
 - **Email:** yusraerlangg@gmail.com
 
-## Folder Structure
-```
-/app                - Application core code
-    /Http            - Controllers and Middleware
-    /Models          - Database models
-    /Services        - Business logic services
-/config            - Configuration files
-/database          - Migrations and seeders
-/public            - Publicly accessible files
-/resources         - Views, assets, lang files
-    /views          - Blade templates
-    /js             - JavaScript files
-    /css            - Stylesheet files
-/routes            - Application routes
-/storage           - Uploaded files, logs, cache
-/tests             - Application tests
-```
 ## Security Features
 - Laravel Sanctum authentication
 - CSRF protection
