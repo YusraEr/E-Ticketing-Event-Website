@@ -1,66 +1,170 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# EventHub - Modern Event Management Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Description
+EventHub is an e-ticketing system designed to manage events, allowing admins, event organizers, and attendees to interact easily in event management and ticket booking.
 
-## About Laravel
+Admins have full access to manage events, users, and view sales reports, while organizers can add, update, and view bookings for their events.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Registered attendees can book tickets, view booking history, and save favorite events.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+With additional features such as a ticketing system, real-time ticket availability tracking, event review system, payment integration, and analytics, this system is designed to provide an organized and efficient experience for all users.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Core Features
 
-## Learning Laravel
+### Event Management
+- Event CRUD operations
+- Image uploads
+- Ticketing system
+- Categorization
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### User System
+- Authentication
+- Booking system
+- Favorites
+- Dashboard
+- History
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Search Features
+- Advanced search
+- Filters
+- Featured events
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Tech Stack
+- **Frontend:** Laravel Blade, TailwindCSS, Alpine.js, Swiper.js
+- **Backend:** Laravel 11, MySQL, PHP 8.1+
+- **Tools:** Laravel Auth, Image Processing, Payment Gateway
 
-## Laravel Sponsors
+## Requirements
+- PHP 8.1+
+- Composer
+- MySQL
+- Node.js & NPM
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Installation
+1. Clone the repository
+    ```sh
+    git clone https://github.com/yourusername/eventhub.git
+    ```
+2. Navigate to the project directory
+    ```sh
+    cd eventhub
+    ```
+3. Install PHP dependencies
+    ```sh
+    composer install
+    ```
+4. Install Node.js dependencies
+    ```sh
+    npm install
+    ```
+5. Copy the example environment file and configure the environment
+    ```sh
+    cp .env.example .env
+    ```
+6. Generate the application key
+    ```sh
+    php artisan key:generate
+    ```
+7. Create a MySQL database for the project
 
-### Premium Partners
+8. Update the `.env` file with your database information
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+9. Run database migrations and seed the database
+    ```sh
+    php artisan migrate --seed
+    ```
+10. Start the local development server
+     ```sh
+     php artisan serve
+     ```
+11. Compile the frontend assets
+     ```sh
+     npm run dev
+     ```
 
-## Contributing
+## Support
+For any issues or support, please contact:
+- **Email:** yusraerlangg@gmail.com
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Folder Structure
+```
+/app                - Application core code
+    /Http            - Controllers and Middleware
+    /Models          - Database models
+    /Services        - Business logic services
+/config            - Configuration files
+/database          - Migrations and seeders
+/public            - Publicly accessible files
+/resources         - Views, assets, lang files
+    /views          - Blade templates
+    /js             - JavaScript files
+    /css            - Stylesheet files
+/routes            - Application routes
+/storage           - Uploaded files, logs, cache
+/tests             - Application tests
+```
+## Security Features
+- Laravel Sanctum authentication
+- CSRF protection
+- XSS prevention
+- SQL injection protection
+- Input validation
+- Secure file uploads
 
-## Code of Conduct
+## Preview
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Landing Page
+<video width="600" controls>
+    <source src="preview/landing-page.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
 
-## Security Vulnerabilities
+*Home page with featured events and search functionality*
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Event Discovery
+<video width="600" controls>
+    <source src="preview/event-discovery.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
 
-## License
+*Browse and filter events with advanced search options*
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Event Details
+<video width="600" controls>
+    <source src="preview/event-details.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+*Detailed event information and booking interface*
+
+### User Dashboard
+<video width="600" controls>
+    <source src="preview/user-dashboard.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+*Personal dashboard showing bookings and favorites*
+
+### Admin Panel
+<video width="600" controls>
+    <source src="preview/admin-panel.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<video width="600" controls>
+    <source src="preview/admin-panel-2.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+*Administrative interface for managing events and users*
+
+### Booking Process
+<video width="600" controls>
+    <source src="preview/booking.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+*Streamlined ticket booking and payment flow*
+
+
+<!-- *Responsive design for mobile devices* -->
